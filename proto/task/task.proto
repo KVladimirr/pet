@@ -4,7 +4,7 @@ package task;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./proto/task;taskpb";
+option go_package = "tasker/internal/task/pb;taskpb";
 
 service TaskService {
     rpc CreateTask (CreateTaskRequest) returns (TaskResponse);

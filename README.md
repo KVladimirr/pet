@@ -21,26 +21,12 @@ TaskBoard — это сервис-ориентированное приложе�
 
 ```
 ├── cmd/
-│   ├── api-gateway/          # REST HTTP сервер, адаптирует запросы к gRPC
-│   ├── task-service/         # сервис задач
-│   ├── reminder-service/     # сервис напоминаний и их отправки
-│   └── notification-worker/  # консьюмер Kafka, отправка напоминаний
+│   └── task-service/  # консьюмер Kafka, отправка напоминаний
 │
 ├── proto/                    # .proto файлы для gRPC
+│   └── task/                 
 │
-├── internal/
-│   ├── common/               # shared код: модели, утилиты
-│   ├── clients/              # gRPC-клиенты к другим сервисам
-│   ├── kafka/                # обёртки и продюсеры Kafka
-│   └── config/               # загрузка конфигов
-│
-├── deploy/
-│   ├── docker/               # Dockerfile и Compose-файлы
-│   └── ci-cd/                # CI/CD скрипты (GitHub Actions, GitLab CI)
-│
-├── scripts/                  # миграции, генераторы, вспомогательные скрипты
-│
-├── docs/                     # Swagger, диаграммы, схемы API
+├── internal/task/
 │
 └── README.md                 # описание проекта
 ```
