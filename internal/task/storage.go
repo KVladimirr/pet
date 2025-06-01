@@ -3,7 +3,6 @@ package task
 import (
 	"sync"
 	pb "tasker/internal/task/pb"
-	"time"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -56,7 +55,7 @@ func (s *TaskStore) UpdateStatus(id string, status string) bool {
 	}
 
 	task.Status = status
-	task.UpdatedAt = timestamppb.New(time.Now())
+	task.UpdatedAt = timestamppb.Now()
 	return true
 }
 
