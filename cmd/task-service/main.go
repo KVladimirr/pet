@@ -19,7 +19,9 @@ func main() {
 	}
 
 	server := grpc.NewServer()
-	taskpb.RegisterTaskServiceServer(server, &task.Server{})
+	taskStore := task.NewTaskStore()
+
+	taskpb.RegisterTaskServiceServer(server, &task.Server{Store: taskStore})
 
 	log.Printf("gRPC server is running on %s", grpcPort)
 	if err := server.Serve(lis); err != nil {
