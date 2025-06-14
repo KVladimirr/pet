@@ -1,63 +1,47 @@
-package gateway_service
-
-import ()
-
-type Gateway struct {}
-
-func (g *Gateway) CreateTask() {}
-
-
-/*
-Здесь будет логика обработчиков гет/пост/пут и тд
-
-internal/gateway/gateway.go
-
 package gateway
 
 import (
-    "context"
-    "net/http"
-    "time"
+	"context"
+	"fmt"
+	"net/http"
+	pb "tasker/internal/task/pb"
 
-    "github.com/gin-gonic/gin"
-    "google.golang.org/protobuf/types/known/timestamppb"
+	// "time"
 
-    pb "tasker/internal/task/pb"
+	"github.com/gin-gonic/gin"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// Gateway хранит gRPC-клиент
 type Gateway struct {
-    Client pb.TaskServiceClient
+	Client pb.TaskServiceClient
 }
 
-// New создает новый Gateway
 func New(client pb.TaskServiceClient) *Gateway {
-    return &Gateway{Client: client}
+	return &Gateway{Client: client}
 }
 
-// Handler для создания задачи
 func (g *Gateway) CreateTaskHandler(c *gin.Context) {
     var req struct {
-        Title       string json:"title"
-        Description string json:"description"
-        Deadline    string json:"deadline" // RFC3339 формат
+        Title       string `json:"title"`
+        Description string `json:"description"`
+        Deadline    *timestamppb.Timestamp `json:"deadline"` // RFC3339 формат
     }
 
     if err := c.ShouldBindJSON(&req); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("invalif request - %v", err)})
         return
     }
 
-    deadline, err := time.Parse(time.RFC3339, req.Deadline)
-    if err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "invalid deadline format"})
-        return
-    }
+    // deadline, err := time.Parse(time.RFC3339, req.Deadline) // по хорошему проверка должна быть не здесь
+    // if err != nil {
+    //     c.JSON(http.StatusBadRequest, gin.H{"error": "invalid deadline format"})
+    //     return
+    // }
 
     grpcReq := &pb.CreateTaskRequest{
         Title:       req.Title,
         Description: req.Description,
-        Deadline:    timestamppb.New(deadline),
+        Deadline:    req.Deadline,
     }
 
     resp, err := g.Client.CreateTask(context.Background(), grpcReq)
@@ -69,5 +53,82 @@ func (g *Gateway) CreateTaskHandler(c *gin.Context) {
     c.JSON(http.StatusOK, resp.Task)
 }
 
+func (g *Gateway) GetTaskHandler(c *gin.Context) {
+	var req struct {
+		Id string `json:"id"`
+	}
 
-*/
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		return
+	}
+
+	grpcReq := &pb.GetTaskRequest{
+		Id: req.Id,
+	}
+
+	resp, err := g.Client.GetTask(context.Background(), grpcReq)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, resp)
+
+}
+
+func (g *Gateway) ListTasksHandler(c *gin.Context) {
+	grpcReq := &pb.ListTasksRequest{}
+
+	resp, err := g.Client.ListTasks(context.Background(), grpcReq)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
+	var req struct {
+		Id string `json:"id"`
+		Status string `json:"status"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		return
+	}
+
+	grpcReq := &pb.UpdateTaskRequest{
+		Id: req.Id,
+		Status: req.Status,
+	}
+
+	resp, err := g.Client.UpdateTask(context.Background(), grpcReq)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (g *Gateway) DeleteTaskHandler(c *gin.Context) {
+	var req struct {
+		Id string `json:"id"`
+	}
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		return
+	}
+
+	grpcReq := &pb.DeleteTaskRequest{
+		Id: req.Id,
+	}
+
+	resp, err := g.Client.DeleteTask(context.Background(), grpcReq)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
