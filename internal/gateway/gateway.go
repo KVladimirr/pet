@@ -28,7 +28,7 @@ func (g *Gateway) CreateTaskHandler(c *gin.Context) {
     }
 
     if err := c.ShouldBindJSON(&req); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("invalif request - %v", err)})
+        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("invalid request - %v", err)})
         return
     }
 
@@ -54,17 +54,17 @@ func (g *Gateway) CreateTaskHandler(c *gin.Context) {
 }
 
 func (g *Gateway) GetTaskHandler(c *gin.Context) {
-	var req struct {
-		Id string `json:"id"`
+	var reqQuery struct {
+		Id string `form:"id"`
 	}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindQuery(&reqQuery); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
 	grpcReq := &pb.GetTaskRequest{
-		Id: req.Id,
+		Id: reqQuery.Id,
 	}
 
 	resp, err := g.Client.GetTask(context.Background(), grpcReq)
@@ -88,19 +88,27 @@ func (g *Gateway) ListTasksHandler(c *gin.Context) {
 }
 
 func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
-	var req struct {
-		Id string `json:"id"`
+	var reqQuery struct {
+		Id string `form:"id"`
+	}
+	
+	var reqBody struct {
 		Status string `json:"status"`
 	}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindQuery(&reqQuery); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		return
+	}
+	
+	if err := c.ShouldBindJSON(&reqBody); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
 	grpcReq := &pb.UpdateTaskRequest{
-		Id: req.Id,
-		Status: req.Status,
+		Id: reqQuery.Id,
+		Status: reqBody.Status,
 	}
 
 	resp, err := g.Client.UpdateTask(context.Background(), grpcReq)
@@ -112,17 +120,17 @@ func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
 }
 
 func (g *Gateway) DeleteTaskHandler(c *gin.Context) {
-	var req struct {
-		Id string `json:"id"`
+	var reqQuery struct {
+		Id string `form:"id"`
 	}
 
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBindQuery(&reqQuery); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
 		return
 	}
 
 	grpcReq := &pb.DeleteTaskRequest{
-		Id: req.Id,
+		Id: reqQuery.Id,
 	}
 
 	resp, err := g.Client.DeleteTask(context.Background(), grpcReq)
