@@ -70,6 +70,7 @@ func (g *Gateway) GetTaskHandler(c *gin.Context) {
 	resp, err := g.Client.GetTask(context.Background(), grpcReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -82,6 +83,7 @@ func (g *Gateway) ListTasksHandler(c *gin.Context) {
 	resp, err := g.Client.ListTasks(context.Background(), grpcReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -114,6 +116,7 @@ func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
 	resp, err := g.Client.UpdateTask(context.Background(), grpcReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, resp)
@@ -136,6 +139,7 @@ func (g *Gateway) DeleteTaskHandler(c *gin.Context) {
 	resp, err := g.Client.DeleteTask(context.Background(), grpcReq)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, resp)
