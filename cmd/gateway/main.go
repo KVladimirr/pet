@@ -4,11 +4,15 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/swaggo/gin-swagger"
+	swaggerFiles "github.com/swaggo/files"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
 	"tasker/internal/gateway"
 	pb "tasker/internal/task/pb"
+
+	_ "tasker/docs"
 )
 
 func main() {
@@ -30,6 +34,8 @@ func main() {
 	router.PUT("/task", gateway.UpdateTaskHandler)
 	router.DELETE("/task", gateway.DeleteTaskHandler)
 
-	log.Println("REST API Gateway listening on :8080")
+	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	log.Println("REST API Gateway listening on :50052")
     router.Run(":50052")
 }
