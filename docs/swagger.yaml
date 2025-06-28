@@ -1,5 +1,5 @@
 definitions:
-  gateway.SwaggerCreateTaskRequest:
+  gateway.CreateTaskRequest:
     properties:
       deadline:
         example: "2025-07-01T12:00:00Z"
@@ -11,8 +11,17 @@ definitions:
         example: Купить хлеб
         type: string
     type: object
-  gateway.SwaggerCreateTaskResponse:
+  gateway.ErrorResponse:
     properties:
+      error:
+        example: some error
+        type: string
+    type: object
+  gateway.TaskResponse:
+    properties:
+      UpdatedAt:
+        example: "2025-07-01T12:00:00Z"
+        type: string
       createdAt:
         example: "2025-07-01T12:00:00Z"
         type: string
@@ -31,14 +40,11 @@ definitions:
       title:
         example: Купить хлеб
         type: string
-      updatedAt:
-        example: "2025-07-01T12:00:00Z"
-        type: string
     type: object
-  gateway.SwaggerErrorResponse:
+  gateway.UpdateTaskRequestBody:
     properties:
-      error:
-        example: some error
+      status:
+        example: TODO
         type: string
     type: object
 host: localhost:50052
@@ -49,6 +55,60 @@ info:
   version: "1.0"
 paths:
   /task:
+    delete:
+      consumes:
+      - application/json
+      description: Удаляет задачу по ее id
+      parameters:
+      - example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gateway.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gateway.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gateway.ErrorResponse'
+      summary: Удаление задачи
+      tags:
+      - task
+    get:
+      consumes:
+      - application/json
+      description: Запрос задачи по id
+      parameters:
+      - example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+        in: query
+        name: id
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gateway.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gateway.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gateway.ErrorResponse'
+      summary: Получение задачи
+      tags:
+      - task
     post:
       consumes:
       - application/json
@@ -56,26 +116,81 @@ paths:
       parameters:
       - description: Данные для создания задачи
         in: body
-        name: request
+        name: body
         required: true
         schema:
-          $ref: '#/definitions/gateway.SwaggerCreateTaskRequest'
+          $ref: '#/definitions/gateway.CreateTaskRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/gateway.SwaggerCreateTaskResponse'
+            $ref: '#/definitions/gateway.TaskResponse'
         "400":
-          description: Ошибка запроса
+          description: Bad Request
           schema:
-            $ref: '#/definitions/gateway.SwaggerErrorResponse'
+            $ref: '#/definitions/gateway.ErrorResponse'
         "500":
-          description: Ошибка сервера
+          description: Internal Server Error
           schema:
-            $ref: '#/definitions/gateway.SwaggerErrorResponse'
+            $ref: '#/definitions/gateway.ErrorResponse'
       summary: Создание задачи
+      tags:
+      - task
+    put:
+      consumes:
+      - application/json
+      description: Обновляет статус задачи по ее id
+      parameters:
+      - description: Id задачи
+        in: query
+        name: id
+        required: true
+        type: string
+      - description: Статус задачи
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/gateway.UpdateTaskRequestBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gateway.TaskResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/gateway.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gateway.ErrorResponse'
+      summary: Обновление задачи
+      tags:
+      - task
+  /tasks:
+    get:
+      consumes:
+      - application/json
+      description: Запрос получения всех задач
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/gateway.TaskResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/gateway.ErrorResponse'
+      summary: Получение списка задач
       tags:
       - task
 swagger: "2.0"

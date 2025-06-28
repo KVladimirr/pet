@@ -16,6 +16,98 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/task": {
+            "get": {
+                "description": "Запрос задачи по id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Получение задачи",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "a81bc81b-dead-4e5d-abff-90865d1e13b1",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.TaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Обновляет статус задачи по ее id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Обновление задачи",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Id задачи",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Статус задачи",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/gateway.UpdateTaskRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.TaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.ErrorResponse"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Создает задачу",
                 "consumes": [
@@ -31,11 +123,11 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "Данные для создания задачи",
-                        "name": "request",
+                        "name": "body",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/gateway.SwaggerCreateTaskRequest"
+                            "$ref": "#/definitions/gateway.CreateTaskRequest"
                         }
                     }
                 ],
@@ -43,19 +135,92 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/gateway.SwaggerCreateTaskResponse"
+                            "$ref": "#/definitions/gateway.TaskResponse"
                         }
                     },
                     "400": {
-                        "description": "Ошибка запроса",
+                        "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/gateway.SwaggerErrorResponse"
+                            "$ref": "#/definitions/gateway.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Ошибка сервера",
+                        "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/gateway.SwaggerErrorResponse"
+                            "$ref": "#/definitions/gateway.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удаляет задачу по ее id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Удаление задачи",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "a81bc81b-dead-4e5d-abff-90865d1e13b1",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.TaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks": {
+            "get": {
+                "description": "Запрос получения всех задач",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Получение списка задач",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/gateway.TaskResponse"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.ErrorResponse"
                         }
                     }
                 }
@@ -63,7 +228,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "gateway.SwaggerCreateTaskRequest": {
+        "gateway.CreateTaskRequest": {
             "type": "object",
             "properties": {
                 "deadline": {
@@ -80,9 +245,22 @@ const docTemplate = `{
                 }
             }
         },
-        "gateway.SwaggerCreateTaskResponse": {
+        "gateway.ErrorResponse": {
             "type": "object",
             "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "some error"
+                }
+            }
+        },
+        "gateway.TaskResponse": {
+            "type": "object",
+            "properties": {
+                "UpdatedAt": {
+                    "type": "string",
+                    "example": "2025-07-01T12:00:00Z"
+                },
                 "createdAt": {
                     "type": "string",
                     "example": "2025-07-01T12:00:00Z"
@@ -106,19 +284,15 @@ const docTemplate = `{
                 "title": {
                     "type": "string",
                     "example": "Купить хлеб"
-                },
-                "updatedAt": {
-                    "type": "string",
-                    "example": "2025-07-01T12:00:00Z"
                 }
             }
         },
-        "gateway.SwaggerErrorResponse": {
+        "gateway.UpdateTaskRequestBody": {
             "type": "object",
             "properties": {
-                "error": {
+                "status": {
                     "type": "string",
-                    "example": "some error"
+                    "example": "TODO"
                 }
             }
         }

@@ -23,8 +23,8 @@ func New(client pb.TaskServiceClient) *Gateway {
 // @Tags         task
 // @Accept       json
 // @Produce      json
-// @Param        request   body	gateway.CreateTaskRequest true "Данные для создания задачи"
-// @Success      200  {object}  gateway.CreateTaskResponse
+// @Param        body   body	gateway.CreateTaskRequest true "Данные для создания задачи"
+// @Success      200  {object}  gateway.TaskResponse
 // @Failure      400  {object}  gateway.ErrorResponse
 // @Failure      500  {object}  gateway.ErrorResponse
 // @Router       /task [post]
@@ -50,20 +50,28 @@ func (g *Gateway) CreateTaskHandler(c *gin.Context) {
 
     resp, err := g.Client.CreateTask(context.Background(), grpcReq)
     if err != nil {
-        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
         return
     }
 
     c.JSON(http.StatusOK, resp.Task)
 }
 
+// @Summary      Получение задачи
+// @Description  Запрос задачи по id
+// @Tags         task
+// @Accept       json
+// @Produce      json
+// @Param        Id   query	gateway.GetTaskRequest true "Данные для получения задачи"
+// @Success      200  {object}  gateway.TaskResponse
+// @Failure      400  {object}  gateway.ErrorResponse
+// @Failure      500  {object}  gateway.ErrorResponse
+// @Router       /task [get]
 func (g *Gateway) GetTaskHandler(c *gin.Context) {
-	var reqQuery struct {
-		Id string `form:"id"`
-	}
+	var reqQuery GetTaskRequest
 
 	if err := c.ShouldBindQuery(&reqQuery); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request"})
 		return
 	}
 
@@ -73,7 +81,7 @@ func (g *Gateway) GetTaskHandler(c *gin.Context) {
 
 	resp, err := g.Client.GetTask(context.Background(), grpcReq)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		return
 	}
 
@@ -81,34 +89,49 @@ func (g *Gateway) GetTaskHandler(c *gin.Context) {
 
 }
 
+// @Summary      Получение списка задач
+// @Description  Запрос получения всех задач
+// @Tags         task
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}  gateway.TaskResponse
+// @Failure      500  {object}  gateway.ErrorResponse
+// @Router       /tasks [get]
 func (g *Gateway) ListTasksHandler(c *gin.Context) {
 	grpcReq := &pb.ListTasksRequest{}
 
 	resp, err := g.Client.ListTasks(context.Background(), grpcReq)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, resp)
 }
 
+// @Summary      Обновление задачи
+// @Description  Обновляет статус задачи по ее id
+// @Tags         task
+// @Accept       json
+// @Produce      json
+// @Param        id		query	string true "Id задачи"
+// @Param        body   body	gateway.UpdateTaskRequestBody true "Статус задачи"
+// @Success      200  {object}  gateway.TaskResponse
+// @Failure      400  {object}  gateway.ErrorResponse
+// @Failure      500  {object}  gateway.ErrorResponse
+// @Router       /task [put]
 func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
-	var reqQuery struct {
-		Id string `form:"id"`
-	}
+	var reqQuery UpdateTaskRequestQuery
 	
-	var reqBody struct {
-		Status string `json:"status"`
-	}
+	var reqBody UpdateTaskRequestBody
 
 	if err := c.ShouldBindQuery(&reqQuery); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request"})
 		return
 	}
 	
 	if err := c.ShouldBindJSON(&reqBody); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request - " + err.Error()})
 		return
 	}
 
@@ -119,20 +142,28 @@ func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
 
 	resp, err := g.Client.UpdateTask(context.Background(), grpcReq)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, resp)
 }
 
+// @Summary      Удаление задачи
+// @Description  Удаляет задачу по ее id
+// @Tags         task
+// @Accept       json
+// @Produce      json
+// @Param        Id		query	gateway.DeleteTaskRequest true "Id задачи"
+// @Success      200  {object}  gateway.TaskResponse
+// @Failure      400  {object}  gateway.ErrorResponse
+// @Failure      500  {object}  gateway.ErrorResponse
+// @Router       /task [delete]
 func (g *Gateway) DeleteTaskHandler(c *gin.Context) {
-	var reqQuery struct {
-		Id string `form:"id"`
-	}
+	var reqQuery DeleteTaskRequest
 
 	if err := c.ShouldBindQuery(&reqQuery); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid request"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request"})
 		return
 	}
 
@@ -142,7 +173,7 @@ func (g *Gateway) DeleteTaskHandler(c *gin.Context) {
 
 	resp, err := g.Client.DeleteTask(context.Background(), grpcReq)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: err.Error()})
 		return
 	}
 
