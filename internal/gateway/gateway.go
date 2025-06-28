@@ -2,11 +2,9 @@ package gateway
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	pb "tasker/internal/task/pb"
-
-	// "time"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -20,28 +18,34 @@ func New(client pb.TaskServiceClient) *Gateway {
 	return &Gateway{Client: client}
 }
 
+// @Summary      Создание задачи
+// @Description  Создает задачу
+// @Tags         task
+// @Accept       json
+// @Produce      json
+// @Param        request   body	gateway.CreateTaskRequest true "Данные для создания задачи"
+// @Success      200  {object}  gateway.CreateTaskResponse
+// @Failure      400  {object}  gateway.ErrorResponse
+// @Failure      500  {object}  gateway.ErrorResponse
+// @Router       /task [post]
 func (g *Gateway) CreateTaskHandler(c *gin.Context) {
-    var req struct {
-        Title       string `json:"title"`
-        Description string `json:"description"`
-        Deadline    *timestamppb.Timestamp `json:"deadline"` // RFC3339 формат
-    }
+	var req CreateTaskRequest
 
     if err := c.ShouldBindJSON(&req); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("invalid request - %v", err)})
+        c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request - " + err.Error()})
         return
     }
 
-    // deadline, err := time.Parse(time.RFC3339, req.Deadline) // по хорошему проверка должна быть не здесь
-    // if err != nil {
-    //     c.JSON(http.StatusBadRequest, gin.H{"error": "invalid deadline format"})
-    //     return
-    // }
+	deadline, err := time.Parse(time.RFC3339, req.Deadline)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid date format"})
+		return
+	}
 
     grpcReq := &pb.CreateTaskRequest{
         Title:       req.Title,
         Description: req.Description,
-        Deadline:    req.Deadline,
+        Deadline:    timestamppb.New(deadline),
     }
 
     resp, err := g.Client.CreateTask(context.Background(), grpcReq)

@@ -14,17 +14,125 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "paths": {}
+    "paths": {
+        "/task": {
+            "post": {
+                "description": "Создает задачу",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Создание задачи",
+                "parameters": [
+                    {
+                        "description": "Данные для создания задачи",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/gateway.SwaggerCreateTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.SwaggerCreateTaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Ошибка запроса",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.SwaggerErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "schema": {
+                            "$ref": "#/definitions/gateway.SwaggerErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "gateway.SwaggerCreateTaskRequest": {
+            "type": "object",
+            "properties": {
+                "deadline": {
+                    "type": "string",
+                    "example": "2025-07-01T12:00:00Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "В ближайшем магазине"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Купить хлеб"
+                }
+            }
+        },
+        "gateway.SwaggerCreateTaskResponse": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "example": "2025-07-01T12:00:00Z"
+                },
+                "deadline": {
+                    "type": "string",
+                    "example": "2025-07-01T12:00:00Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "В ближайшем магазине"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "a81bc81b-dead-4e5d-abff-90865d1e13b1"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "TODO"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Купить хлеб"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2025-07-01T12:00:00Z"
+                }
+            }
+        },
+        "gateway.SwaggerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "some error"
+                }
+            }
+        }
+    }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
+	Version:          "1.0",
+	Host:             "localhost:50052",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Swagger Tasker",
+	Description:      "Service for working with tasks",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

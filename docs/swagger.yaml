@@ -1,4 +1,81 @@
+definitions:
+  gateway.SwaggerCreateTaskRequest:
+    properties:
+      deadline:
+        example: "2025-07-01T12:00:00Z"
+        type: string
+      description:
+        example: В ближайшем магазине
+        type: string
+      title:
+        example: Купить хлеб
+        type: string
+    type: object
+  gateway.SwaggerCreateTaskResponse:
+    properties:
+      createdAt:
+        example: "2025-07-01T12:00:00Z"
+        type: string
+      deadline:
+        example: "2025-07-01T12:00:00Z"
+        type: string
+      description:
+        example: В ближайшем магазине
+        type: string
+      id:
+        example: a81bc81b-dead-4e5d-abff-90865d1e13b1
+        type: string
+      status:
+        example: TODO
+        type: string
+      title:
+        example: Купить хлеб
+        type: string
+      updatedAt:
+        example: "2025-07-01T12:00:00Z"
+        type: string
+    type: object
+  gateway.SwaggerErrorResponse:
+    properties:
+      error:
+        example: some error
+        type: string
+    type: object
+host: localhost:50052
 info:
   contact: {}
-paths: {}
+  description: Service for working with tasks
+  title: Swagger Tasker
+  version: "1.0"
+paths:
+  /task:
+    post:
+      consumes:
+      - application/json
+      description: Создает задачу
+      parameters:
+      - description: Данные для создания задачи
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/gateway.SwaggerCreateTaskRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/gateway.SwaggerCreateTaskResponse'
+        "400":
+          description: Ошибка запроса
+          schema:
+            $ref: '#/definitions/gateway.SwaggerErrorResponse'
+        "500":
+          description: Ошибка сервера
+          schema:
+            $ref: '#/definitions/gateway.SwaggerErrorResponse'
+      summary: Создание задачи
+      tags:
+      - task
 swagger: "2.0"

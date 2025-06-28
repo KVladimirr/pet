@@ -15,6 +15,12 @@ import (
 	_ "tasker/docs"
 )
 
+
+// @title           Swagger Tasker
+// @version         1.0
+// @description     Service for working with tasks
+
+// @host      localhost:50052
 func main() {
 	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
