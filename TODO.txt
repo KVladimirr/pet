@@ -5,8 +5,22 @@
 - Добавить openApi доку (попробовать либу swaggo) - swagger 2.0 swaggo
 
 
-Нужно:
+В работе:
 - Добавить валидацию в ручки
+Базовые проверки на наличие поля (если такая нужна, наверно не нужна - протестить) в прото, более сложные в хендлере (может вынести в отдельный метод)
+Другую валидацию выносим вне бизнес логики
+Команда для генерации (убрать в task.proto корневую папку в импорте proto/)
+protoc \
+  --proto_path=proto \
+  --go_out=internal/task/pb \
+  --go_opt=paths=source_relative \
+  --go-grpc_out=internal/task/pb \
+  --go-grpc_opt=paths=source_relative \
+  --validate_out=paths=source_relative:internal/task/pb \
+  proto/task.proto
+
+
+Нужно:
 - Добавить номральную БД
 - Добавить мейкфайл:
     1) генерация сваггера swag init -g cmd/gateway/main.go
