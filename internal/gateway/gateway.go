@@ -3,6 +3,7 @@ package gateway
 import (
 	"context"
 	"net/http"
+	gatewayhelpers "tasker/internal/helpers/gateway_helpers"
 	pb "tasker/internal/task/pb"
 	"time"
 
@@ -31,22 +32,27 @@ func New(client pb.TaskServiceClient) *Gateway {
 func (g *Gateway) CreateTaskHandler(c *gin.Context) {
 	var req CreateTaskRequest
 
-    if err := c.ShouldBindJSON(&req); err != nil {
-        c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request - " + err.Error()})
-        return
-    }
-
-	deadline, err := time.Parse(time.RFC3339, req.Deadline)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid date format"})
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid JSON: " + err.Error()})
 		return
 	}
 
-    grpcReq := &pb.CreateTaskRequest{
+	deadline, err := time.Parse(time.RFC3339, req.Deadline)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid date format: " + err.Error()})
+		return
+	}
+
+	grpcReq := &pb.CreateTaskRequest{
         Title:       req.Title,
         Description: req.Description,
         Deadline:    timestamppb.New(deadline),
     }
+
+	if err := gatewayhelpers.Validate(c, grpcReq); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request: " + err.Error()})
+		return
+	}
 
     resp, err := g.Client.CreateTask(context.Background(), grpcReq)
     if err != nil {
@@ -71,12 +77,17 @@ func (g *Gateway) GetTaskHandler(c *gin.Context) {
 	var reqQuery GetTaskRequest
 
 	if err := c.ShouldBindQuery(&reqQuery); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid JSON: " + err.Error()})
 		return
 	}
 
 	grpcReq := &pb.GetTaskRequest{
 		Id: reqQuery.Id,
+	}
+
+	if err := gatewayhelpers.Validate(c, grpcReq); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request: " + err.Error()})
+		return
 	}
 
 	resp, err := g.Client.GetTask(context.Background(), grpcReq)
@@ -126,18 +137,23 @@ func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
 	var reqBody UpdateTaskRequestBody
 
 	if err := c.ShouldBindQuery(&reqQuery); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid JSON: " + err.Error()})
 		return
 	}
 	
 	if err := c.ShouldBindJSON(&reqBody); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request - " + err.Error()})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid JSON: " + err.Error()})
 		return
 	}
 
 	grpcReq := &pb.UpdateTaskRequest{
 		Id: reqQuery.Id,
 		Status: reqBody.Status,
+	}
+
+	if err := gatewayhelpers.Validate(c, grpcReq); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request: " + err.Error()})
+		return
 	}
 
 	resp, err := g.Client.UpdateTask(context.Background(), grpcReq)
@@ -163,12 +179,17 @@ func (g *Gateway) DeleteTaskHandler(c *gin.Context) {
 	var reqQuery DeleteTaskRequest
 
 	if err := c.ShouldBindQuery(&reqQuery); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request"})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid JSON: " + err.Error()})
 		return
 	}
 
 	grpcReq := &pb.DeleteTaskRequest{
 		Id: reqQuery.Id,
+	}
+
+	if err := gatewayhelpers.Validate(c, grpcReq); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid request: " + err.Error()})
+		return
 	}
 
 	resp, err := g.Client.DeleteTask(context.Background(), grpcReq)

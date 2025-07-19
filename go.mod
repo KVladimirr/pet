@@ -1,6 +1,6 @@
 module tasker
 
-go 1.24.2
+go 1.23.11
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v1.1.0

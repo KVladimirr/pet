@@ -19,7 +19,9 @@ message Task {
     string id = 1 [(validate.rules).string.uuid = true];
     string title = 2;
     string description = 3;
-    string status = 4;
+    string status = 4 [(validate.rules).string = {
+        in: ["TODO", "INPROGRESS", "DONE", "CANCELED", "HOLD"]
+    }];
     google.protobuf.Timestamp deadline = 5;
     google.protobuf.Timestamp createdAt = 6;
     google.protobuf.Timestamp updatedAt = 7;
@@ -32,18 +34,20 @@ message CreateTaskRequest {
 }
 
 message GetTaskRequest {
-    string id = 1;
+    string id = 1 [(validate.rules).string.uuid = true];
 }
 
 message ListTasksRequest {}
 
 message UpdateTaskRequest {
-    string id = 1;
-    string status = 2;
+    string id = 1 [(validate.rules).string.uuid = true];
+    string status = 2 [(validate.rules).string = {
+        in: ["TODO", "INPROGRESS", "DONE", "CANCELED", "HOLD"]
+    }];
 }
 
 message DeleteTaskRequest {
-    string id = 1;
+    string id = 1 [(validate.rules).string.uuid = true];
 }
 
 message TaskResponse {

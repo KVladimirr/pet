@@ -19,14 +19,14 @@ type TaskResponse struct {
 
 // Тело запроса на создание задачи
 type CreateTaskRequest struct {
-	Title       string `json:"title" example:"Купить хлеб"`
-	Description string `json:"description" example:"В ближайшем магазине"`
-	Deadline    string `json:"deadline" example:"2025-07-01T12:00:00Z"`
+	Title       string `json:"title" example:"Купить хлеб" binding:"required"`
+	Description string `json:"description" example:"В ближайшем магазине" binding:"required"`
+	Deadline    string `json:"deadline" example:"2025-07-01T12:00:00Z" binding:"required"`
 }
 
 // Тело запроса на получение задачи
 type GetTaskRequest struct {
-	Id			string `form:"id" example:"a81bc81b-dead-4e5d-abff-90865d1e13b1"`
+	Id			string `form:"id" example:"a81bc81b-dead-4e5d-abff-90865d1e13b1" binding:"required"`
 }
 
 // Тело запроса на получение списка задач
@@ -34,15 +34,15 @@ type ListTasksRequest struct {}
 
 // Тело запроса на обновление задачи
 type UpdateTaskRequestBody struct {
-	Status		string `json:"status" example:"TODO"`
+	Status		string `json:"status" example:"TODO" binding:"required"`
 }
 
 // Квери параметры запроса на обновление задачи
 type UpdateTaskRequestQuery struct {
-	Id			string `form:"id" example:"a81bc81b-dead-4e5d-abff-90865d1e13b1"`
+	Id			string `form:"id" example:"a81bc81b-dead-4e5d-abff-90865d1e13b1" binding:"required"`
 }
 
 // Тело запроса на удаление задачи
 type DeleteTaskRequest struct {
-	Id			string `form:"id" example:"a81bc81b-dead-4e5d-abff-90865d1e13b1"`
+	Id			string `form:"id" example:"a81bc81b-dead-4e5d-abff-90865d1e13b1" binding:"required"`
 }

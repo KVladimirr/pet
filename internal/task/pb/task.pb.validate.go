@@ -75,7 +75,16 @@ func (m *Task) validate(all bool) error {
 
 	// no validation rules for Description
 
-	// no validation rules for Status
+	if _, ok := _Task_Status_InLookup[m.GetStatus()]; !ok {
+		err := TaskValidationError{
+			field:  "Status",
+			reason: "value must be in list [TODO INPROGRESS DONE CANCELED HOLD]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if all {
 		switch v := interface{}(m.GetDeadline()).(type) {
@@ -249,6 +258,14 @@ var _ interface {
 	ErrorName() string
 } = TaskValidationError{}
 
+var _Task_Status_InLookup = map[string]struct{}{
+	"TODO":       {},
+	"INPROGRESS": {},
+	"DONE":       {},
+	"CANCELED":   {},
+	"HOLD":       {},
+}
+
 // Validate checks the field values on CreateTaskRequest with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
@@ -406,10 +423,28 @@ func (m *GetTaskRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	if err := m._validateUuid(m.GetId()); err != nil {
+		err = GetTaskRequestValidationError{
+			field:  "Id",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return GetTaskRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+func (m *GetTaskRequest) _validateUuid(uuid string) error {
+	if matched := _task_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
 	}
 
 	return nil
@@ -608,12 +643,39 @@ func (m *UpdateTaskRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	if err := m._validateUuid(m.GetId()); err != nil {
+		err = UpdateTaskRequestValidationError{
+			field:  "Id",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
-	// no validation rules for Status
+	if _, ok := _UpdateTaskRequest_Status_InLookup[m.GetStatus()]; !ok {
+		err := UpdateTaskRequestValidationError{
+			field:  "Status",
+			reason: "value must be in list [TODO INPROGRESS DONE CANCELED HOLD]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return UpdateTaskRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+func (m *UpdateTaskRequest) _validateUuid(uuid string) error {
+	if matched := _task_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
 	}
 
 	return nil
@@ -692,6 +754,14 @@ var _ interface {
 	ErrorName() string
 } = UpdateTaskRequestValidationError{}
 
+var _UpdateTaskRequest_Status_InLookup = map[string]struct{}{
+	"TODO":       {},
+	"INPROGRESS": {},
+	"DONE":       {},
+	"CANCELED":   {},
+	"HOLD":       {},
+}
+
 // Validate checks the field values on DeleteTaskRequest with the rules defined
 // in the proto definition for this message. If any rules are violated, the
 // first error encountered is returned, or nil if there are no violations.
@@ -714,10 +784,28 @@ func (m *DeleteTaskRequest) validate(all bool) error {
 
 	var errors []error
 
-	// no validation rules for Id
+	if err := m._validateUuid(m.GetId()); err != nil {
+		err = DeleteTaskRequestValidationError{
+			field:  "Id",
+			reason: "value must be a valid UUID",
+			cause:  err,
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
 
 	if len(errors) > 0 {
 		return DeleteTaskRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+func (m *DeleteTaskRequest) _validateUuid(uuid string) error {
+	if matched := _task_uuidPattern.MatchString(uuid); !matched {
+		return errors.New("invalid uuid format")
 	}
 
 	return nil
