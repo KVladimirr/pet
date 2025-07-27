@@ -8,6 +8,8 @@ import (
 	pb "tasker/internal/task/pb"
 
 	"github.com/google/uuid"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -18,6 +20,10 @@ type Server struct {
 
 func (s *Server) CreateTask(ctx context.Context, req *pb.CreateTaskRequest) (*pb.TaskResponse, error) {
 	log.Printf("CreateTask called: %+v", req)
+
+	if err := CreateTaskValidation(req); err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, err.Error())
+	}
 
 	task := &pb.Task{
 		Id: uuid.New().String(),
