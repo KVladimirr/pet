@@ -6,6 +6,7 @@ import (
 	"log"
 
 	pb "tasker/internal/task/pb"
+	"tasker/internal/storage"
 
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
@@ -15,7 +16,7 @@ import (
 
 type Server struct {
 	pb.UnimplementedTaskServiceServer
-	Store *TaskStore
+	Store *storage.TaskStore
 }
 
 func (s *Server) CreateTask(ctx context.Context, req *pb.CreateTaskRequest) (*pb.TaskResponse, error) {

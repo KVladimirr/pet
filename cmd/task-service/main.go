@@ -8,6 +8,7 @@ import (
 	
 	"tasker/internal/task/pb"
 	"tasker/internal/task"
+	"tasker/internal/storage"
 )
 
 const grpcPort = ":50051"
@@ -19,7 +20,7 @@ func main() {
 	}
 
 	server := grpc.NewServer()
-	taskStore := task.NewTaskStore()
+	taskStore := storage.NewTaskStore()
 
 	taskpb.RegisterTaskServiceServer(server, &task.Server{Store: taskStore})
 
