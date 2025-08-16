@@ -1,7 +1,10 @@
 package storage
 
 import (
+	"context"
+	"fmt"
 	"sync"
+	"tasker/config"
 	pb "tasker/internal/task/pb"
 
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -10,14 +13,20 @@ import (
 
 type TaskStore struct {
 	mu sync.RWMutex
-	tasks map[string]*pb.Task
+	// tasks map[string]*pb.Task
+	db *pgConnector
 }
 
-func NewTaskStore() *TaskStore {
+func NewTaskStore(ctx context.Context) (*TaskStore, error) {
+	conn, err := NewPostgres(ctx, config.PG_CONNECTION_STRING)
+	if err != nil {
+		return nil, err
+	}
 
 	return &TaskStore{
-		tasks: make(map[string]*pb.Task),
-	}
+		// tasks: make(map[string]*pb.Task),
+		db: conn,
+	}, nil
 }
 
 
@@ -25,7 +34,9 @@ func NewTaskStore() *TaskStore {
 func (s *TaskStore) Create(task *pb.Task) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.tasks[task.Id] = task
+	// s.tasks[task.Id] = task
+	db
+
 }
 
 func (s *TaskStore) Get(id string) (*pb.Task, bool) {
