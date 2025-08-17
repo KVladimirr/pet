@@ -40,26 +40,28 @@ func (s *Server) CreateTask(ctx context.Context, req *pb.CreateTaskRequest) (*pb
 	return &pb.TaskResponse{Task: task}, nil
 }
 
-// func (s *Server) GetTask(ctx context.Context, req *pb.GetTaskRequest) (*pb.TaskResponse, error) {
-// 	log.Printf("GetTask called: %+v", req)
+func (s *Server) GetTask(ctx context.Context, req *pb.GetTaskRequest) (*pb.TaskResponse, error) {
+	log.Printf("GetTask called: %+v", req)
 
-// 	task, ok := s.Store.Get(req.Id)
-	
-// 	if !ok {
-// 		return nil, fmt.Errorf("task with id %q not found", req.Id)
-// 	}
+	task, err := s.Store.Get(ctx, req.Id)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
-// 	return &pb.TaskResponse{Task: task}, nil
+	return &pb.TaskResponse{Task: task}, nil
 
-// }
+}
 
-// func (s *Server) ListTasks(ctx context.Context, req *pb.ListTasksRequest) (*pb.ListTasksResponse, error) {
-// 	log.Printf("ListTasks called: %+v", req)
+func (s *Server) ListTasks(ctx context.Context, req *pb.ListTasksRequest) (*pb.ListTasksResponse, error) {
+	log.Printf("ListTasks called: %+v", req)
 
-// 	tasks := s.Store.List()
+	tasks, err := s.Store.List(ctx)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
-// 	return &pb.ListTasksResponse{Task: tasks}, nil
-// }
+	return &pb.ListTasksResponse{Task: tasks}, nil
+}
 
 // func (s *Server) UpdateTask(ctx context.Context, req *pb.UpdateTaskRequest) (*pb.TaskResponse, error) {
 // 	log.Printf("UpdateTask called: %+v", req)
