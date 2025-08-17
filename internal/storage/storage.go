@@ -3,82 +3,88 @@ package storage
 import (
 	"context"
 	"fmt"
-	"sync"
-	"tasker/config"
 	pb "tasker/internal/task/pb"
 
-	"google.golang.org/protobuf/types/known/timestamppb"
+	// "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 
 type TaskStore struct {
-	mu sync.RWMutex
 	// tasks map[string]*pb.Task
 	db *pgConnector
 }
 
-func NewTaskStore(ctx context.Context) (*TaskStore, error) {
-	conn, err := NewPostgres(ctx, config.PG_CONNECTION_STRING)
-	if err != nil {
-		return nil, err
-	}
-
-	return &TaskStore{
-		// tasks: make(map[string]*pb.Task),
-		db: conn,
-	}, nil
+func NewTaskStore(dbConn *pgConnector) *TaskStore {
+	return &TaskStore{db: dbConn}
 }
 
 
 // Методы для работы с мапой(БД)
-func (s *TaskStore) Create(task *pb.Task) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	// s.tasks[task.Id] = task
-	db
+func (t *TaskStore) Create(ctx context.Context, task *pb.Task) error {
+	query := `
+		INSERT INTO tasks (
+			id,
+			title,
+			description,
+			status,
+			deadline,
+			created_at,
+			updated_at
+		) VALUES (
+			$1, $2, $3, $4, $5, $6, $7
+		)
+	`
 
-}
-
-func (s *TaskStore) Get(id string) (*pb.Task, bool) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	task, ok := s.tasks[id]
-	return task, ok
-}
-
-func (s *TaskStore) List() []*pb.Task {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	task_list := make([]*pb.Task, 0, len(s.tasks))
-	for _, t := range s.tasks {
-		task_list = append(task_list, t)
-	}
-	return task_list
-}
-
-func (s *TaskStore) UpdateStatus(id string, status string) bool {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-
-	task, ok := s.tasks[id]
-	if !ok {
-		return false
+	_, err := t.db.Conn.Exec(
+		ctx,
+		query,
+		task.GetId(),
+		task.GetTitle(),
+		task.GetDescription(),
+		task.GetStatus(),
+		task.GetDeadline().AsTime(),
+		task.GetCreatedAt().AsTime(),
+		task.GetUpdatedAt().AsTime(),
+	)
+	if err != nil {
+		return fmt.Errorf("failed to create task: %w", err)
 	}
 
-	task.Status = status
-	task.UpdatedAt = timestamppb.Now()
-	return true
+	return nil
 }
 
-func (s *TaskStore) Delete(id string) bool {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+// func (s *TaskStore) Get(id string) (*pb.Task, bool) {
+// 	task, ok := s.tasks[id]
+// 	return task, ok
+// }
 
-	_, ok := s.tasks[id]
-	if !ok {
-		return false
-	}
+// func (s *TaskStore) List() []*pb.Task {
+// 	task_list := make([]*pb.Task, 0, len(s.tasks))
+// 	for _, t := range s.tasks {
+// 		task_list = append(task_list, t)
+// 	}
+// 	return task_list
+// }
 
-	delete(s.tasks, id)
-	return true
-}
+// func (s *TaskStore) UpdateStatus(id string, status string) bool {
+
+// 	task, ok := s.tasks[id]
+// 	if !ok {
+// 		return false
+// 	}
+
+// 	task.Status = status
+// 	task.UpdatedAt = timestamppb.Now()
+// 	return true
+// }
+
+// func (s *TaskStore) Delete(id string) bool {
+
+// 	_, ok := s.tasks[id]
+// 	if !ok {
+// 		return false
+// 	}
+
+// 	delete(s.tasks, id)
+// 	return true
+// }
