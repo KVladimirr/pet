@@ -3,7 +3,7 @@ syntax = "proto3";
 package task;
 
 import "google/protobuf/timestamp.proto";
-import "proto/validate/validate.proto";
+import "validate/validate.proto";
 
 option go_package = "tasker/internal/task/pb;taskpb";
 
