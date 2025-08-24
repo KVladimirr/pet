@@ -63,29 +63,34 @@ func (s *Server) ListTasks(ctx context.Context, req *pb.ListTasksRequest) (*pb.L
 	return &pb.ListTasksResponse{Task: tasks}, nil
 }
 
-// func (s *Server) UpdateTask(ctx context.Context, req *pb.UpdateTaskRequest) (*pb.TaskResponse, error) {
-// 	log.Printf("UpdateTask called: %+v", req)
+func (s *Server) UpdateTask(ctx context.Context, req *pb.UpdateTaskRequest) (*pb.TaskResponse, error) {
+	log.Printf("UpdateTask called: %+v", req)
 
-// 	task, ok := s.Store.Get(req.Id)
-// 	if !ok {
-// 		return nil, fmt.Errorf("task with id %q not found", req.Id)
-// 	}
+	_, err := s.Store.Get(ctx, req.Id)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
-// 	s.Store.UpdateStatus(req.Id, req.Status)
+	updatedTask, err := s.Store.UpdateStatus(ctx, req.Id, req.Status)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
 
-// 	return &pb.TaskResponse{Task: task}, nil
-// }
+	return &pb.TaskResponse{Task: updatedTask}, nil
+}
 
-// func (s *Server) DeleteTask(ctx context.Context, req *pb.DeleteTaskRequest) (*pb.DeleteTaskResponse, error) {
-// 	log.Printf("DeleteTask called: %+v", req)
+func (s *Server) DeleteTask(ctx context.Context, req *pb.DeleteTaskRequest) (*pb.DeleteTaskResponse, error) {
+	log.Printf("DeleteTask called: %+v", req)
 
-// 	_, ok := s.Store.Get(req.Id)
-// 	if !ok {
-// 		return nil, fmt.Errorf("task with id %q not found", req.Id)
-// 	}
+	_, err := s.Store.Get(ctx, req.Id)
+	if err != nil {
+		return &pb.DeleteTaskResponse{Success: false}, status.Error(codes.Internal, err.Error())
+	}
 
-// 	res := s.Store.Delete(req.Id)
+	if err := s.Store.Delete(ctx, req.Id); err != nil{
+		return &pb.DeleteTaskResponse{Success: false}, status.Error(codes.Internal, err.Error())
+	}
 
-// 	return &pb.DeleteTaskResponse{Success: res}, nil
+	return &pb.DeleteTaskResponse{Success: true}, nil
 
-// }
+}

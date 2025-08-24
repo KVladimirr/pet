@@ -9,12 +9,10 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	// "google.golang.org/protobuf/types/known/timestamppb"
 )
 
 
 type TaskStore struct {
-	// tasks map[string]*pb.Task
 	db *pgConnector
 }
 
@@ -23,7 +21,7 @@ func NewTaskStore(dbConn *pgConnector) *TaskStore {
 }
 
 
-// Методы для работы с мапой(БД)
+// Методы для работы с БД
 func (t *TaskStore) Create(ctx context.Context, task *pb.Task) error {
 	query := `
 		INSERT INTO tasks (
@@ -131,25 +129,47 @@ func (t *TaskStore) List(ctx context.Context) ([]*pb.Task, error) {
 	return result, nil
 }
 
-// func (s *TaskStore) UpdateStatus(id string, status string) bool {
+func (t *TaskStore) UpdateStatus(ctx context.Context, id string, status string) (*pb.Task, error) {
+	query := `
+		UPDATE tasks
+		SET status = $1, updated_at = $2
+		WHERE id = $3
+		RETURNING id, title, description, status, deadline, created_at, updated_at
+	`
 
-// 	task, ok := s.tasks[id]
-// 	if !ok {
-// 		return false
-// 	}
+	var task pb.Task
+	var deadline, created_at, updated_at time.Time
 
-// 	task.Status = status
-// 	task.UpdatedAt = timestamppb.Now()
-// 	return true
-// }
+	err := t.db.Conn.QueryRow(ctx, query, status, timestamppb.Now().AsTime(), id).Scan(
+		&task.Id,
+		&task.Title,
+		&task.Description,
+		&task.Status,
+		&deadline,
+		&created_at,
+		&updated_at,
+	)
+	if err != nil {
+		return nil, fmt.Errorf("failed to update task: %w", err)
+	}
 
-// func (s *TaskStore) Delete(id string) bool {
+	task.Deadline = timestamppb.New(deadline)
+	task.CreatedAt = timestamppb.New(created_at)
+	task.UpdatedAt = timestamppb.New(updated_at)
 
-// 	_, ok := s.tasks[id]
-// 	if !ok {
-// 		return false
-// 	}
+	return &task, nil
+}
 
-// 	delete(s.tasks, id)
-// 	return true
-// }
+func (t *TaskStore) Delete(ctx context.Context, id string) error {
+	query := `
+		DELETE FROM tasks
+		WHERE id = $1
+	`
+
+	_, err := t.db.Conn.Exec(ctx, query, id)
+	if err != nil {
+		return fmt.Errorf("failed to delete task: %w", err)
+	}
+
+	return nil
+}
