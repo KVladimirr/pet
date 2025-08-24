@@ -33,7 +33,8 @@ const docTemplate = `{
                         "type": "string",
                         "example": "a81bc81b-dead-4e5d-abff-90865d1e13b1",
                         "name": "id",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -169,7 +170,8 @@ const docTemplate = `{
                         "type": "string",
                         "example": "a81bc81b-dead-4e5d-abff-90865d1e13b1",
                         "name": "id",
-                        "in": "query"
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -230,6 +232,11 @@ const docTemplate = `{
     "definitions": {
         "gateway.CreateTaskRequest": {
             "type": "object",
+            "required": [
+                "deadline",
+                "description",
+                "title"
+            ],
             "properties": {
                 "deadline": {
                     "type": "string",
@@ -289,6 +296,9 @@ const docTemplate = `{
         },
         "gateway.UpdateTaskRequestBody": {
             "type": "object",
+            "required": [
+                "status"
+            ],
             "properties": {
                 "status": {
                     "type": "string",

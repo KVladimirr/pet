@@ -10,6 +10,10 @@ definitions:
       title:
         example: Купить хлеб
         type: string
+    required:
+    - deadline
+    - description
+    - title
     type: object
   gateway.ErrorResponse:
     properties:
@@ -46,6 +50,8 @@ definitions:
       status:
         example: TODO
         type: string
+    required:
+    - status
     type: object
 host: localhost:50052
 info:
@@ -63,6 +69,7 @@ paths:
       - example: a81bc81b-dead-4e5d-abff-90865d1e13b1
         in: query
         name: id
+        required: true
         type: string
       produces:
       - application/json
@@ -90,6 +97,7 @@ paths:
       - example: a81bc81b-dead-4e5d-abff-90865d1e13b1
         in: query
         name: id
+        required: true
         type: string
       produces:
       - application/json
