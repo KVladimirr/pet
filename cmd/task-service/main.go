@@ -39,8 +39,9 @@ func main() {
 
 	taskpb.RegisterTaskServiceServer(server, &task.Server{Store: db})
 
-	log.Printf("gRPC server is running on %s", grpcPort)
 	if err := server.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+	
+	log.Printf("gRPC server is running on %s", grpcPort)
 }
