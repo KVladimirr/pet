@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	// _ "github.com/lib/pq"
+	// _ "github.com/lib/pq" добавить в main.go
 )
 
 var (
@@ -82,7 +82,7 @@ func (p *PostgresTaskRepository) GetByID(ctx context.Context, id uuid.UUID) (*do
 func (p *PostgresTaskRepository) GetAll(ctx context.Context, limit uint, offset uint) ([]*domain.Task, error) {
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
     defer cancel()
-	
+
 	query := `SELECT id, title, description, status, deadline, created_at, updated_at FROM tasks
 	    ORDER BY created_at DESC
         LIMIT $1 OFFSET $2
@@ -120,4 +120,25 @@ func (p *PostgresTaskRepository) GetAll(ctx context.Context, limit uint, offset 
     }
 
 	return tasks, nil
+}
+
+func (p *PostgresTaskRepository) Delete(ctx context.Context, id uuid.UUID) error {
+	query := `DELETE FROM tasks WHERE id = $1`
+
+	result, err := p.db.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        return err
+    }
+
+	if rowsAffected == 0 {
+        return ErrTaskNotFound
+    }
+
+	return nil
+
 }
