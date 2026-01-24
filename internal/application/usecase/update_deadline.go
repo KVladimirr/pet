@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"tasker/internal/application/repository"
+	"tasker/internal/infrastracture/repository"
 	"time"
 
 	"github.com/google/uuid"

@@ -14,3 +14,4 @@ type TaskRepository interface {
     GetAll(ctx context.Context, limit uint, offset uint) ([]*domain.Task, error)
     Delete(ctx context.Context, id uuid.UUID) error
 }
+
