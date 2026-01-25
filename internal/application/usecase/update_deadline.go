@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"tasker/internal/infrastracture/repository"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,7 +9,7 @@ import (
 
 
 type UpdateTaskDeadlineUsecase struct {
-	repo repository.TaskRepository
+	repo TaskRepository
 }
 
 type UpdateTaskDeadlineDTO struct {

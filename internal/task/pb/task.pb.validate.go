@@ -543,6 +543,10 @@ func (m *ListTasksRequest) validate(all bool) error {
 
 	var errors []error
 
+	// no validation rules for Limit
+
+	// no validation rules for Offset
+
 	if len(errors) > 0 {
 		return ListTasksRequestMultiError(errors)
 	}

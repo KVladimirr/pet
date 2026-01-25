@@ -2,14 +2,13 @@ package usecase
 
 import (
 	"context"
-	"tasker/internal/infrastracture/repository"
 	"tasker/internal/domain"
 	"time"
 )
 
 
 type CreateTaskUsecase struct {
-	repo repository.TaskRepository
+	repo TaskRepository
 }
 
 type CreateTaskDTO struct {

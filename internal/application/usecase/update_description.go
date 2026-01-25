@@ -2,14 +2,13 @@ package usecase
 
 import (
 	"context"
-	"tasker/internal/infrastracture/repository"
 
 	"github.com/google/uuid"
 )
 
 
 type UpdateTaskDescriptionUsecase struct {
-	repo repository.TaskRepository
+	repo TaskRepository
 }
 
 type UpdateTaskDescriptionDTO struct {
