@@ -18,7 +18,7 @@ type UpdateTaskDeadlineDTO struct {
 	NewDeadline time.Time
 }
 
-func (u *UpdateTaskDeadlineUsecase) Execute(ctx context.Context, cmd UpdateTaskDeadlineDTO) error {
+func (u *UpdateTaskDeadlineUsecase) Execute(ctx context.Context, cmd *UpdateTaskDeadlineDTO) error {
 	task, err := u.repo.GetByID(ctx, cmd.TaskID)
 	if err != nil {
 		return err

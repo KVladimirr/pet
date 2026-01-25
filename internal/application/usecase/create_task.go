@@ -18,7 +18,7 @@ type CreateTaskDTO struct {
 	Deadline time.Time
 }
 
-func (c *CreateTaskUsecase) Execute(ctx context.Context, cmd CreateTaskDTO) (*domain.Task, error) {
+func (c *CreateTaskUsecase) Execute(ctx context.Context, cmd *CreateTaskDTO) (*domain.Task, error) {
 	task, err := domain.NewTask(cmd.Title, cmd.Description, cmd.Deadline)
 	if err != nil {
 		return nil, err

@@ -40,10 +40,12 @@ message GetTaskRequest {
 message ListTasksRequest {}
 
 message UpdateTaskRequest {
-    string id = 1 [(validate.rules).string.uuid = true];
-    string status = 2 [(validate.rules).string = {
+    optional string status = 1 [(validate.rules).string = {
         in: ["TODO", "INPROGRESS", "DONE", "CANCELED", "HOLD"]
     }];
+    optional string description = 2;
+    optional string title = 3;
+    optional google.protobuf.Timestamp deadline = 4;
 }
 
 message DeleteTaskRequest {

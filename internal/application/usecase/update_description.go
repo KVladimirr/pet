@@ -17,7 +17,7 @@ type UpdateTaskDescriptionDTO struct {
 	NewDescription string
 }
 
-func (u *UpdateTaskDescriptionUsecase) Execute(ctx context.Context, cmd UpdateTaskDescriptionDTO) error {
+func (u *UpdateTaskDescriptionUsecase) Execute(ctx context.Context, cmd *UpdateTaskDescriptionDTO) error {
 	task, err := u.repo.GetByID(ctx, cmd.TaskID)
 	if err != nil {
 		return err
