@@ -655,15 +655,60 @@ func (m *UpdateTaskRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if _, ok := _UpdateTaskRequest_Status_InLookup[m.GetStatus()]; !ok {
-		err := UpdateTaskRequestValidationError{
-			field:  "Status",
-			reason: "value must be in list [TODO INPROGRESS DONE CANCELED HOLD]",
+	if m.Status != nil {
+
+		if _, ok := _UpdateTaskRequest_Status_InLookup[m.GetStatus()]; !ok {
+			err := UpdateTaskRequestValidationError{
+				field:  "Status",
+				reason: "value must be in list [TODO INPROGRESS DONE CANCELED HOLD]",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
 		}
-		if !all {
-			return err
+
+	}
+
+	if m.Description != nil {
+		// no validation rules for Description
+	}
+
+	if m.Title != nil {
+		// no validation rules for Title
+	}
+
+	if m.Deadline != nil {
+
+		if all {
+			switch v := interface{}(m.GetDeadline()).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, UpdateTaskRequestValidationError{
+						field:  "Deadline",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, UpdateTaskRequestValidationError{
+						field:  "Deadline",
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(m.GetDeadline()).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return UpdateTaskRequestValidationError{
+					field:  "Deadline",
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
 		}
-		errors = append(errors, err)
+
 	}
 
 	if len(errors) > 0 {

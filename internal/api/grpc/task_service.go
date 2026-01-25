@@ -3,8 +3,10 @@ package grpc
 import (
 	"context"
 	"tasker/internal/application/usecase"
+	"tasker/internal/domain"
 	pb "tasker/internal/task/pb"
 
+	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -72,7 +74,63 @@ func (t *TaskService) CreateTask(ctx context.Context, req *pb.CreateTaskRequest)
 }
 
 func (t *TaskService) UpdateTask(ctx context.Context, req *pb.UpdateTaskRequest) (*pb.TaskResponse, error) {
-	if req.Id != "" {
-		
+	taskID, err := uuid.Parse(req.GetId())
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "failed to parse uuid: %v", err.Error())
 	}
+
+	task, err := t.GetTaskByIDUC.Execute(ctx, &usecase.GetTaskByIDDTO{TaskID: taskID})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "task not found: %v", err.Error())
+	}
+
+	if req.GetTitle() != "" && req.GetTitle() != task.Title {
+		err = t.UpdateTitleUC.Execute(ctx, &usecase.UpdateTaskTitleDTO{TaskID: taskID, NewTitle: req.GetTitle()})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to update task title: %v", err.Error())
+		}
+	}
+
+	if req.Description != nil {
+		if req.GetDescription() != task.Description{
+			err = t.UpdateDescriptionUC.Execute(ctx, &usecase.UpdateTaskDescriptionDTO{TaskID: taskID, NewDescription: req.GetDescription()})
+			if err != nil {
+				return nil, status.Errorf(codes.Internal, "failed to update task description: %v", err.Error())
+			}
+		}
+	}
+
+	if req.GetStatus() != "" && req.GetStatus() != string(task.Status) {
+		err = t.UpdateStatusUC.Execute(ctx, &usecase.UpdateTaskStatusDTO{
+			TaskID: taskID,
+			NewStatus: domain.TaskStatus(req.GetStatus()),
+		})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to update task status: %v", err.Error())
+		}
+	}
+
+	if req.GetDeadline() != nil && !req.GetDeadline().AsTime().Equal(task.Deadline) {
+		err = t.UpdateDeadlineUC.Execute(ctx, &usecase.UpdateTaskDeadlineDTO{TaskID: taskID, NewDeadline: req.GetDeadline().AsTime()})
+		if err != nil {
+			return nil, status.Errorf(codes.Internal, "failed to update task deadline: %v", err.Error())
+		}
+	}
+
+	updatedTask, err := t.GetTaskByIDUC.Execute(ctx, &usecase.GetTaskByIDDTO{TaskID: taskID})
+	if err != nil {
+		return nil, status.Errorf(codes.NotFound, "updated task not found: %v", err.Error())
+	}
+
+	return &pb.TaskResponse{
+		Task: &pb.Task{
+			Id: updatedTask.ID.String(),
+			Title: updatedTask.Title,
+			Description: updatedTask.Description,
+			Status: string(updatedTask.Status),
+			Deadline: timestamppb.New(updatedTask.Deadline),
+			CreatedAt: timestamppb.New(updatedTask.CreatedAt),
+			UpdatedAt: timestamppb.New(updatedTask.UpdatedAt),
+		},
+	}, nil
 }
