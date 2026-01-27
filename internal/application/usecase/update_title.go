@@ -11,6 +11,10 @@ type UpdateTaskTitleUsecase struct {
 	repo TaskRepository
 }
 
+func NewUpdateTaskTitleUsecase(repo TaskRepository) *UpdateTaskTitleUsecase {
+	return &UpdateTaskTitleUsecase{repo: repo}
+}
+
 type UpdateTaskTitleDTO struct {
 	TaskID uuid.UUID
 	NewTitle string

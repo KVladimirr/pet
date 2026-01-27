@@ -12,6 +12,10 @@ type DeleteTaskUsecase struct {
 	repo TaskRepository
 }
 
+func NewDeleteTaskUsecase(repo TaskRepository) *DeleteTaskUsecase {
+	return &DeleteTaskUsecase{repo: repo}
+}
+
 type DeleteTaskDTO struct {
 	TaskID uuid.UUID
 }

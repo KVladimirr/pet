@@ -148,7 +148,7 @@ func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
 
 	grpcReq := &pb.UpdateTaskRequest{
 		Id: reqQuery.Id,
-		Status: reqBody.Status,
+		Status: &reqBody.Status,
 	}
 
 	if err := gatewayhelpers.Validate(c, grpcReq); err != nil {

@@ -12,6 +12,10 @@ type UpdateTaskDeadlineUsecase struct {
 	repo TaskRepository
 }
 
+func NewUpdateTaskDeadlineUsecase(repo TaskRepository) *UpdateTaskDeadlineUsecase {
+	return &UpdateTaskDeadlineUsecase{repo: repo}
+}
+
 type UpdateTaskDeadlineDTO struct {
 	TaskID uuid.UUID
 	NewDeadline time.Time

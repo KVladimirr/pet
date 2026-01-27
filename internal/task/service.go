@@ -70,7 +70,7 @@ func (s *Server) UpdateTask(ctx context.Context, req *pb.UpdateTaskRequest) (*pb
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	updatedTask, err := s.Store.UpdateStatus(ctx, req.Id, req.Status)
+	updatedTask, err := s.Store.UpdateStatus(ctx, req.Id, *req.Status)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}

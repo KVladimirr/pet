@@ -10,6 +10,10 @@ type GetAllTasksUsecase struct {
 	repo TaskRepository
 }
 
+func NewGetAllTasksUsecase(repo TaskRepository) *GetAllTasksUsecase {
+	return &GetAllTasksUsecase{repo: repo}
+}
+
 type GetAllTasksDTO struct {
 	Limit uint
 	Offset uint

@@ -12,6 +12,10 @@ type GetTaskByIDUsecase struct {
 	repo TaskRepository
 }
 
+func NewGetTaskByIDUsecase(repo TaskRepository) *GetTaskByIDUsecase {
+	return &GetTaskByIDUsecase{repo: repo}
+}
+
 type GetTaskByIDDTO struct {
 	TaskID uuid.UUID
 }

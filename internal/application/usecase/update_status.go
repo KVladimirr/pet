@@ -12,6 +12,10 @@ type UpdateTaskStatusUsecase struct {
 	repo TaskRepository
 }
 
+func NewUpdateTaskStatusUsecase(repo TaskRepository) *UpdateTaskStatusUsecase {
+	return &UpdateTaskStatusUsecase{repo: repo}
+}
+
 type UpdateTaskStatusDTO struct {
 	TaskID uuid.UUID
 	NewStatus domain.TaskStatus

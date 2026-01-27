@@ -34,7 +34,7 @@ func NewTaskService(
 	updateStatusUC *usecase.UpdateTaskStatusUsecase,
 	updateTitleUC *usecase.UpdateTaskTitleUsecase,
 	deleteTaskUC *usecase.DeleteTaskUsecase,
-) (*TaskService, error) {
+) *TaskService {
 	return &TaskService{
 		CreateTaskUC: createTaskUC,
 		GetTaskByIDUC: getTaskByIDUC,
@@ -44,7 +44,7 @@ func NewTaskService(
 		UpdateStatusUC: updateStatusUC,
 		UpdateTitleUC: updateTitleUC,
 		DeleteTaskUC: deleteTaskUC,
-	}, nil
+	}
 }
 
 func (t *TaskService) CreateTask(ctx context.Context, req *pb.CreateTaskRequest) (*pb.TaskResponse, error) {

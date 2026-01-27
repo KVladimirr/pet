@@ -11,6 +11,10 @@ type CreateTaskUsecase struct {
 	repo TaskRepository
 }
 
+func NewCreateTaskUsecase(repo TaskRepository) *CreateTaskUsecase {
+	return &CreateTaskUsecase{repo: repo}
+}
+
 type CreateTaskDTO struct {
 	Title string
 	Description string
