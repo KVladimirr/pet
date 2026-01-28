@@ -4,7 +4,7 @@ import (
 	"context"
 	"tasker/internal/application/usecase"
 	"tasker/internal/domain"
-	pb "tasker/internal/task/pb"
+	pb "tasker/internal/pb"
 
 	"github.com/google/uuid"
 	"google.golang.org/grpc/codes"

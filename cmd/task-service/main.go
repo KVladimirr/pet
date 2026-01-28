@@ -14,7 +14,7 @@ import (
 
 	"time"
 
-	"tasker/internal/task/pb"
+	"tasker/internal/pb"
 
 	api "tasker/internal/api/grpc"
 

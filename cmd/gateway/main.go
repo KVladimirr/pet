@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	"tasker/internal/gateway"
-	pb "tasker/internal/task/pb"
+	pb "tasker/internal/pb"
 
 	_ "tasker/docs"
 )

@@ -88,7 +88,7 @@ func (p *PostgresTaskRepository) GetAll(ctx context.Context, limit uint, offset 
         LIMIT $1 OFFSET $2
 	`
 
-	rows, err := p.db.QueryContext(ctx, query)
+	rows, err := p.db.QueryContext(ctx, query, limit, offset)
 	if err != nil {
 		return nil, err
 	}

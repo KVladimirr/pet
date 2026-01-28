@@ -3,7 +3,7 @@ package grpc
 import (
 	"fmt"
 	"tasker/config"
-	pb "tasker/internal/task/pb"
+	pb "tasker/internal/pb"
 	"time"
 )
 

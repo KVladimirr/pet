@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 	gatewayhelpers "tasker/internal/helpers/gateway_helpers"
-	pb "tasker/internal/task/pb"
+	pb "tasker/internal/pb"
 	"time"
 
 	"github.com/gin-gonic/gin"
