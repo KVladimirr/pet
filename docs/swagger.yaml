@@ -47,11 +47,15 @@ definitions:
     type: object
   gateway.UpdateTaskRequestBody:
     properties:
+      deadline:
+        type: string
+      description:
+        type: string
       status:
         example: TODO
         type: string
-    required:
-    - status
+      title:
+        type: string
     type: object
 host: localhost:50052
 info:
@@ -185,6 +189,20 @@ paths:
       consumes:
       - application/json
       description: Запрос получения всех задач
+      parameters:
+      - default: 10
+        description: Лимит записей
+        in: query
+        maximum: 100
+        minimum: 1
+        name: limit
+        type: integer
+      - default: 0
+        description: Смещение
+        in: query
+        minimum: 0
+        name: offset
+        type: integer
       produces:
       - application/json
       responses:

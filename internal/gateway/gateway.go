@@ -77,7 +77,7 @@ func (g *Gateway) GetTaskHandler(c *gin.Context) {
 	var reqQuery GetTaskRequest
 
 	if err := c.ShouldBindQuery(&reqQuery); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid JSON: " + err.Error()})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid query: " + err.Error()})
 		return
 	}
 
@@ -105,11 +105,23 @@ func (g *Gateway) GetTaskHandler(c *gin.Context) {
 // @Tags         task
 // @Accept       json
 // @Produce      json
+// @Param        limit   query int false "Лимит записей" default(10) minimum(1) maximum(100)
+// @Param        offset  query int false "Смещение" default(0) minimum(0)
 // @Success      200  {array}  gateway.TaskResponse
 // @Failure      500  {object}  gateway.ErrorResponse
 // @Router       /tasks [get]
 func (g *Gateway) ListTasksHandler(c *gin.Context) {
-	grpcReq := &pb.ListTasksRequest{}
+	var reqQuery ListTasksRequest
+
+	if err := c.ShouldBindQuery(&reqQuery); err != nil {
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid query: " + err.Error()})
+		return
+	}
+
+	grpcReq := &pb.ListTasksRequest{
+		Limit:	*reqQuery.Limit,
+		Offset: *reqQuery.Offset,
+	}
 
 	resp, err := g.Client.ListTasks(context.Background(), grpcReq)
 	if err != nil {
@@ -137,7 +149,7 @@ func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
 	var reqBody UpdateTaskRequestBody
 
 	if err := c.ShouldBindQuery(&reqQuery); err != nil {
-		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid JSON: " + err.Error()})
+		c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid query: " + err.Error()})
 		return
 	}
 	
@@ -148,7 +160,23 @@ func (g *Gateway) UpdateTaskHandler(c *gin.Context) {
 
 	grpcReq := &pb.UpdateTaskRequest{
 		Id: reqQuery.Id,
-		Status: &reqBody.Status,
+		Status: reqBody.Status,
+		Title: reqBody.Title,
+		Description: reqBody.Description,
+	}
+
+	if reqBody.Deadline != nil {
+		if *reqBody.Deadline == "" {
+			c.JSON(http.StatusBadRequest, ErrorResponse{Error: "deadline cant be empty string"})
+			return
+		} 
+
+		deadline, err := time.Parse(time.RFC3339, *reqBody.Deadline)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, ErrorResponse{Error: "invalid date format: " + err.Error()})
+			return
+		}
+		grpcReq.Deadline = timestamppb.New(deadline)
 	}
 
 	if err := gatewayhelpers.Validate(c, grpcReq); err != nil {

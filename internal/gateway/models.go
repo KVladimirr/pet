@@ -30,11 +30,17 @@ type GetTaskRequest struct {
 }
 
 // Тело запроса на получение списка задач
-type ListTasksRequest struct {}
+type ListTasksRequest struct {
+	Limit			*int32 `form:"limit" binding:"required"`
+	Offset			*int32 `form:"offset" binding:"required"`
+}
 
 // Тело запроса на обновление задачи
 type UpdateTaskRequestBody struct {
-	Status		string `json:"status" example:"TODO" binding:"required"`
+	Status		*string `json:"status" example:"TODO"`
+	Description	*string `json:"description"`
+	Title		*string `json:"title"`
+	Deadline    *string `json:"deadline"`
 }
 
 // Квери параметры запроса на обновление задачи

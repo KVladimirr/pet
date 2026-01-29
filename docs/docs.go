@@ -209,6 +209,25 @@ const docTemplate = `{
                     "task"
                 ],
                 "summary": "Получение списка задач",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "minimum": 1,
+                        "type": "integer",
+                        "default": 10,
+                        "description": "Лимит записей",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "minimum": 0,
+                        "type": "integer",
+                        "default": 0,
+                        "description": "Смещение",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -296,13 +315,19 @@ const docTemplate = `{
         },
         "gateway.UpdateTaskRequestBody": {
             "type": "object",
-            "required": [
-                "status"
-            ],
             "properties": {
+                "deadline": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
                 "status": {
                     "type": "string",
                     "example": "TODO"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         }
@@ -319,6 +344,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "Service for working with tasks",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+	// LeftDelim:        "{{",
+	// RightDelim:       "}}",
 }
 
 func init() {
