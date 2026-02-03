@@ -30,6 +30,7 @@ const (
 var (
     ErrCannotEditTask = errors.New("cannot change finished task")
 	ErrEmptyTitle = errors.New("title cannot be empty")
+	ErrEmptyDeadline = errors.New("deadline cannot be empty")
 	ErrOldDeadline = errors.New("deadline cannot be in the past")
 	ErrInvalidStatus = errors.New("invalid status")
 )
@@ -40,6 +41,10 @@ func NewTask(title string, description string, deadline time.Time) (*Task, error
     }
 
 	now := time.Now()
+
+	if deadline.IsZero() {
+        return nil, ErrEmptyDeadline
+    }
 
 	if deadline.Before(now) {
 		return nil, ErrOldDeadline
