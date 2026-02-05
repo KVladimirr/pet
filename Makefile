@@ -17,6 +17,6 @@ run_tasker:
 	go run cmd/task-service/main.go
 
 domain_tests:
-	go test ./internal/domain/ -v
+	go test ./internal/domain/test -v
 
 .PHONY: run run_gateway run_tasker

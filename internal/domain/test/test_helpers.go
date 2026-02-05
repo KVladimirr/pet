@@ -59,3 +59,15 @@ func (t *TaskBuilder) UpdatedAt(updated_at time.Time) *TaskBuilder {
 	return t
 }
 
+func DeepCopyTask(src *domain.Task) *domain.Task {
+	return &domain.Task{
+		ID: src.ID,
+		Title: src.Title,
+		Description: src.Description,
+		Status: src.Status,
+		Deadline: src.Deadline,
+		CreatedAt: src.CreatedAt,
+		UpdatedAt: src.UpdatedAt,
+	}
+}
+

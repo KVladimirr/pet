@@ -1,9 +1,19 @@
 package test
 
-import(
-	"time"
+import (
 	"tasker/internal/domain"
+	"time"
 )
+
+type testInput interface {
+	newTaskData | updateStatusData
+}
+
+type testCase[T testInput] struct{
+	Name string
+	InputData T
+	WantErr error
+}
 
 type newTaskData struct{
 	Title 		string
@@ -12,19 +22,15 @@ type newTaskData struct{
 }
 
 type updateStatusData struct {
+	task 		*domain.Task
 	newStatus	domain.TaskStatus
 }
 
-type testCase struct{
-	Name string
-	InputData newTaskData
-	WantErr error
-}
 
-func GetNewTaskTestData() []testCase {
+func GetNewTaskTestData() []testCase[newTaskData] {
 	var deadline = time.Now().Add(time.Hour)
 	
-	return []testCase{
+	return []testCase[newTaskData]{
 		{
 			Name: "valid",
 			InputData: newTaskData{Title: "Valid", Description: "Valid desc", Deadline: deadline},
@@ -53,12 +59,12 @@ func GetNewTaskTestData() []testCase {
 	}
 }
 
-// func GetUpdateStatusTestCases() []testCase {
-// 	return []testCase{
-// 		{
-// 			Name: "valid",
-// 			InputData: updateStatusData{newStatus: },
-// 			WantErr: nil,
-// 		},
-// 	}
-// }
+func GetUpdateStatusTestCases() []testCase[updateStatusData] {
+	return []testCase[updateStatusData]{
+		{
+			Name: "Valid: TODO to INPROGRESS",
+			InputData: updateStatusData{newStatus: domain.TaskStatusInProgress, task: NewTaskBuilder().task},
+			WantErr: nil,
+		},
+	}
+}

@@ -1,8 +1,8 @@
 package test
 
 import (
-	"testing"
 	"tasker/internal/domain"
+	"testing"
 
 	"github.com/google/uuid"
 )
@@ -28,7 +28,6 @@ func TestNewTask(t *testing.T) {
 
 			if err != nil {
                 t.Fatalf("unexpected error: %v", err)
-                return
             }
 
 			if result == nil {
@@ -66,6 +65,59 @@ func TestNewTask(t *testing.T) {
 	}
 }
 
-// func TestUpdateStatus(t *testing.T) {
-// 	testCases := 
-// }
+func TestUpdateStatus(t *testing.T) {
+	testCases := GetUpdateStatusTestCases()
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+
+			originalTask := DeepCopyTask(tc.InputData.task)
+
+			err := tc.InputData.task.UpdateStatus(tc.InputData.newStatus)
+			
+			if tc.WantErr != nil {
+				if err == nil {
+					t.Errorf("expected error: %v, got nil", tc.WantErr)
+				}
+				if err.Error() != tc.WantErr.Error() {
+					t.Errorf("expected error: %v, got %v", tc.WantErr, err)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			if tc.InputData.task.Status != tc.InputData.newStatus {
+				t.Errorf("expected status: %v, got %v", tc.InputData.newStatus, tc.InputData.task.Status)
+			}
+
+			if !tc.InputData.task.UpdatedAt.After(originalTask.UpdatedAt) {
+				t.Errorf("updated_at should change, got  %v", tc.InputData.task.UpdatedAt)
+			}
+
+			if tc.InputData.task.ID != originalTask.ID {
+				t.Errorf("ID should not change")
+			}
+
+			if tc.InputData.task.Title != originalTask.Title {
+				t.Errorf("Title should not change")
+			}
+
+			if tc.InputData.task.Description != originalTask.Description {
+				t.Errorf("Description should not change")
+			}
+
+			if !tc.InputData.task.Deadline.Equal(originalTask.Deadline) {
+				t.Errorf("Deadline should not change")
+			}
+
+			if !tc.InputData.task.CreatedAt.Equal(originalTask.CreatedAt) {
+				t.Errorf("CreatedAt should not change")
+			}
+		})
+	}
+}
+
