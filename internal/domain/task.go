@@ -101,8 +101,18 @@ func (t *Task) UpdateDescription(newDescription string) error {
 }
 
 func (t *Task) UpdateDeadline(newDeadline time.Time) error {
+	now := time.Now()
+
 	if !t.CanEdit() {
 		return ErrCannotEditTask
+	}
+
+	if newDeadline.IsZero() {
+        return ErrEmptyDeadline
+    }
+
+	if newDeadline.Before(now) {
+		return ErrOldDeadline
 	}
 
 	t.Deadline = newDeadline
