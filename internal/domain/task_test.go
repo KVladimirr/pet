@@ -1,7 +1,6 @@
-package test
+package domain
 
 import (
-	"tasker/internal/domain"
 	"testing"
 
 	"github.com/google/uuid"
@@ -14,7 +13,7 @@ func TestNewTask(t *testing.T) {
 		tc := tc
 		t.Run(tc.Name, func(t *testing.T) {
 			t.Parallel()
-			result, err := domain.NewTask(tc.InputData.Title, tc.InputData.Description, tc.InputData.Deadline)
+			result, err := NewTask(tc.InputData.Title, tc.InputData.Description, tc.InputData.Deadline)
 			
 			if tc.WantErr != nil { 
 				if err == nil {
@@ -50,7 +49,7 @@ func TestNewTask(t *testing.T) {
 				t.Errorf("ID should not be nil")
 			}
 
-			if result.Status != domain.TaskStatusTodo {
+			if result.Status != TaskStatusTodo {
 				t.Errorf("expected status TODO, got: %v", result.Status)
 			}
 
@@ -284,6 +283,70 @@ func TestUpdateDeadline(t *testing.T) {
 
 			if !tc.InputData.task.CreatedAt.Equal(originalTask.CreatedAt) {
 				t.Errorf("CreatedAt should not change")
+			}
+		})
+	}
+}
+
+func TestIsOverdue(t *testing.T) {
+	testCases := GetIsOverdueTestCases()
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+
+			isOverdue := tc.InputData.task.IsOverdue()
+
+			if isOverdue != tc.InputData.expectedResponse {
+				t.Errorf("expected isOverdue to be: %v, got %v", tc.InputData.expectedResponse, isOverdue)
+			}
+		})
+	}
+}
+
+func TestIsActive(t *testing.T) {
+	testCases := GetIsActiveTestCases()
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+
+			isActive := tc.InputData.task.IsActive()
+
+			if isActive != tc.InputData.expectedResponse {
+				t.Errorf("expected isActive to be: %v, got %v", tc.InputData.expectedResponse, isActive)
+			}
+		})
+	}
+}
+
+func TestIsFinished(t *testing.T) {
+	testCases := GetIsFinishedTestCases()
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+
+			isFinished := tc.InputData.task.IsFinished()
+
+			if isFinished != tc.InputData.expectedResponse {
+				t.Errorf("expected isFinished to be: %v, got %v", tc.InputData.expectedResponse, isFinished)
+			}
+		})
+	}
+}
+
+func TestCanEdit(t *testing.T) {
+	testCases := GetCanEditTestCases()
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+
+			canEdit := tc.InputData.task.CanEdit()
+
+			if canEdit != tc.InputData.expectedResponse {
+				t.Errorf("expected canEdit to be: %v, got %v", tc.InputData.expectedResponse, canEdit)
 			}
 		})
 	}

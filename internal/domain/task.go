@@ -66,14 +66,9 @@ func (t *Task) UpdateStatus(newStatus TaskStatus) error {
 		return ErrCannotEditTask
 	}
 
-	switch newStatus{
-	case TaskStatusTodo, TaskStatusInProgress, TaskStatusHold, TaskStatusCanceled, TaskStatusDone:
-		t.Status = newStatus
-		t.UpdatedAt = time.Now()
-		return nil
-	default:
-		return ErrInvalidStatus
-	}
+	t.Status = newStatus
+	t.UpdatedAt = time.Now()
+	return nil
 }
 
 func (t *Task) UpdateTitle(newTitle string) error {

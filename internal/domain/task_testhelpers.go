@@ -1,7 +1,6 @@
-package test
+package domain
 
 import (
-	"tasker/internal/domain"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,11 +8,11 @@ import (
 
 
 type TaskBuilder struct {
-	task *domain.Task
+	task *Task
 }
 
 func NewTaskBuilder() *TaskBuilder {
-	task, _ := domain.NewTask(
+	task, _ := NewTask(
 		"Base title",
 		"Base Description",
 		time.Now().Add(time.Hour),
@@ -39,7 +38,7 @@ func (t *TaskBuilder) ID(id uuid.UUID) *TaskBuilder {
 	return t
 }
 
-func (t *TaskBuilder) Status(status domain.TaskStatus) *TaskBuilder {
+func (t *TaskBuilder) Status(status TaskStatus) *TaskBuilder {
 	t.task.Status = status
 	return t
 }
@@ -59,8 +58,8 @@ func (t *TaskBuilder) UpdatedAt(updated_at time.Time) *TaskBuilder {
 	return t
 }
 
-func DeepCopyTask(src *domain.Task) *domain.Task {
-	return &domain.Task{
+func DeepCopyTask(src *Task) *Task {
+	return &Task{
 		ID: src.ID,
 		Title: src.Title,
 		Description: src.Description,
