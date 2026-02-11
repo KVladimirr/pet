@@ -37,7 +37,7 @@ var (
 
 func NewTask(title string, description string, deadline time.Time) (*Task, error) {
     if title == "" {
-        return nil, errors.New("title cannot be empty")
+        return nil, ErrEmptyTitle
     }
 
 	now := time.Now()
