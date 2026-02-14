@@ -7,7 +7,6 @@ import (
 	"github.com/google/uuid"
 )
 
-
 type DeleteTaskUsecase struct {
 	repo TaskRepository
 }
@@ -21,6 +20,10 @@ type DeleteTaskDTO struct {
 }
 
 func (c *DeleteTaskUsecase) Execute(ctx context.Context, cmd *DeleteTaskDTO) error {
+	if cmd == nil {
+		return NilDTOError
+	}
+
 	if err := c.repo.Delete(ctx, cmd.TaskID); err != nil {
 		return err
 	}
