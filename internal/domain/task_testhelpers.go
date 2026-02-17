@@ -8,7 +8,7 @@ import (
 
 
 type TaskBuilder struct {
-	task *Task
+	Task *Task
 }
 
 func NewTaskBuilder() *TaskBuilder {
@@ -19,42 +19,42 @@ func NewTaskBuilder() *TaskBuilder {
 	)
 
 	return &TaskBuilder{
-		task: task,
+		Task: task,
 	}
 }
 
 func (t *TaskBuilder) Title(title string) *TaskBuilder {
-	t.task.Title = title
+	t.Task.Title = title
 	return t
 }
 
 func (t *TaskBuilder) Description(description string) *TaskBuilder {
-	t.task.Description = description
+	t.Task.Description = description
 	return t
 }
 
 func (t *TaskBuilder) ID(id uuid.UUID) *TaskBuilder {
-	t.task.ID = id
+	t.Task.ID = id
 	return t
 }
 
 func (t *TaskBuilder) Status(status TaskStatus) *TaskBuilder {
-	t.task.Status = status
+	t.Task.Status = status
 	return t
 }
 
 func (t *TaskBuilder) Deadline(deadline time.Time) *TaskBuilder {
-	t.task.Deadline = deadline
+	t.Task.Deadline = deadline
 	return t
 }
 
 func (t *TaskBuilder) CreatedAt(created_at time.Time) *TaskBuilder {
-	t.task.CreatedAt = created_at
+	t.Task.CreatedAt = created_at
 	return t
 }
 
 func (t *TaskBuilder) UpdatedAt(updated_at time.Time) *TaskBuilder {
-	t.task.UpdatedAt = updated_at
+	t.Task.UpdatedAt = updated_at
 	return t
 }
 

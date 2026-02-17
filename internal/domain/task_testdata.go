@@ -98,107 +98,107 @@ func GetUpdateStatusTestCases() []testCase[updateStatusData] {
 	return []testCase[updateStatusData]{
 		{
 			Name: "Valid: TODO to INPROGRESS",
-			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().task},
+			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: TODO to DONE",
-			InputData: updateStatusData{newStatus: TaskStatusDone, task: NewTaskBuilder().task},
+			InputData: updateStatusData{newStatus: TaskStatusDone, task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: TODO to CANCELLED",
-			InputData: updateStatusData{newStatus: TaskStatusCanceled, task: NewTaskBuilder().task},
+			InputData: updateStatusData{newStatus: TaskStatusCanceled, task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: TODO to HOLD",
-			InputData: updateStatusData{newStatus: TaskStatusHold, task: NewTaskBuilder().task},
+			InputData: updateStatusData{newStatus: TaskStatusHold, task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: INPROGRESS to TODO",
-			InputData: updateStatusData{newStatus: TaskStatusTodo, task: NewTaskBuilder().Status(TaskStatusInProgress).task},
+			InputData: updateStatusData{newStatus: TaskStatusTodo, task: NewTaskBuilder().Status(TaskStatusInProgress).Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: INPROGRESS to DONE",
-			InputData: updateStatusData{newStatus: TaskStatusDone, task: NewTaskBuilder().Status(TaskStatusInProgress).task},
+			InputData: updateStatusData{newStatus: TaskStatusDone, task: NewTaskBuilder().Status(TaskStatusInProgress).Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: INPROGRESS to CANCELLED",
-			InputData: updateStatusData{newStatus: TaskStatusCanceled, task: NewTaskBuilder().Status(TaskStatusInProgress).task},
+			InputData: updateStatusData{newStatus: TaskStatusCanceled, task: NewTaskBuilder().Status(TaskStatusInProgress).Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: INPROGRESS to HOLD",
-			InputData: updateStatusData{newStatus: TaskStatusHold, task: NewTaskBuilder().Status(TaskStatusInProgress).task},
+			InputData: updateStatusData{newStatus: TaskStatusHold, task: NewTaskBuilder().Status(TaskStatusInProgress).Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: HOLD to TODO",
-			InputData: updateStatusData{newStatus: TaskStatusTodo, task: NewTaskBuilder().Status(TaskStatusHold).task},
+			InputData: updateStatusData{newStatus: TaskStatusTodo, task: NewTaskBuilder().Status(TaskStatusHold).Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: HOLD to INPROGRESS",
-			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Status(TaskStatusHold).task},
+			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Status(TaskStatusHold).Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: HOLD to DONE",
-			InputData: updateStatusData{newStatus: TaskStatusDone, task: NewTaskBuilder().Status(TaskStatusHold).task},
+			InputData: updateStatusData{newStatus: TaskStatusDone, task: NewTaskBuilder().Status(TaskStatusHold).Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Valid: HOLD to CANCELLED",
-			InputData: updateStatusData{newStatus: TaskStatusCanceled, task: NewTaskBuilder().Status(TaskStatusHold).task},
+			InputData: updateStatusData{newStatus: TaskStatusCanceled, task: NewTaskBuilder().Status(TaskStatusHold).Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Invalid: CANCELLED to TODO",
-			InputData: updateStatusData{newStatus: TaskStatusTodo, task: NewTaskBuilder().Status(TaskStatusCanceled).task},
+			InputData: updateStatusData{newStatus: TaskStatusTodo, task: NewTaskBuilder().Status(TaskStatusCanceled).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: CANCELLED to INPROGRESS",
-			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Status(TaskStatusCanceled).task},
+			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Status(TaskStatusCanceled).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: CANCELLED to DONE",
-			InputData: updateStatusData{newStatus: TaskStatusDone, task: NewTaskBuilder().Status(TaskStatusCanceled).task},
+			InputData: updateStatusData{newStatus: TaskStatusDone, task: NewTaskBuilder().Status(TaskStatusCanceled).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: CANCELLED to HOLD",
-			InputData: updateStatusData{newStatus: TaskStatusHold, task: NewTaskBuilder().Status(TaskStatusCanceled).task},
+			InputData: updateStatusData{newStatus: TaskStatusHold, task: NewTaskBuilder().Status(TaskStatusCanceled).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: DONE to TODO",
-			InputData: updateStatusData{newStatus: TaskStatusTodo, task: NewTaskBuilder().Status(TaskStatusDone).task},
+			InputData: updateStatusData{newStatus: TaskStatusTodo, task: NewTaskBuilder().Status(TaskStatusDone).Task},
 			WantErr:ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: DONE to INPROGRESS",
-			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Status(TaskStatusDone).task},
+			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Status(TaskStatusDone).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: DONE to CANCELLED",
-			InputData: updateStatusData{newStatus: TaskStatusCanceled, task: NewTaskBuilder().Status(TaskStatusDone).task},
+			InputData: updateStatusData{newStatus: TaskStatusCanceled, task: NewTaskBuilder().Status(TaskStatusDone).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: DONE to HOLD",
-			InputData: updateStatusData{newStatus: TaskStatusHold, task: NewTaskBuilder().Status(TaskStatusDone).task},
+			InputData: updateStatusData{newStatus: TaskStatusHold, task: NewTaskBuilder().Status(TaskStatusDone).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: Overdue task update",
-			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Deadline(time.Now().Add(-time.Hour)).task},
+			InputData: updateStatusData{newStatus: TaskStatusInProgress, task: NewTaskBuilder().Deadline(time.Now().Add(-time.Hour)).Task},
 			WantErr: ErrCannotEditTask,
 		},
 	}
@@ -208,27 +208,27 @@ func GetUpdateTitleTestCases() []testCase[updateTitleData] {
 	return []testCase[updateTitleData]{
 		{
 			Name: "Valid",
-			InputData: updateTitleData{newTitle: "Another title", task: NewTaskBuilder().task},
+			InputData: updateTitleData{newTitle: "Another title", task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Invalid: in DONE status",
-			InputData: updateTitleData{newTitle: "Another title", task: NewTaskBuilder().Status(TaskStatusDone).task},
+			InputData: updateTitleData{newTitle: "Another title", task: NewTaskBuilder().Status(TaskStatusDone).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: in CANCELLED status",
-			InputData: updateTitleData{newTitle: "Another title", task: NewTaskBuilder().Status(TaskStatusCanceled).task},
+			InputData: updateTitleData{newTitle: "Another title", task: NewTaskBuilder().Status(TaskStatusCanceled).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: Overdue task",
-			InputData: updateTitleData{newTitle: "Another title", task: NewTaskBuilder().Deadline(time.Now().Add(-time.Hour)).task},
+			InputData: updateTitleData{newTitle: "Another title", task: NewTaskBuilder().Deadline(time.Now().Add(-time.Hour)).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: empty title",
-			InputData: updateTitleData{newTitle: "", task: NewTaskBuilder().task},
+			InputData: updateTitleData{newTitle: "", task: NewTaskBuilder().Task},
 			WantErr: ErrEmptyTitle,
 		},
 	}
@@ -238,27 +238,27 @@ func GetUpdateDescriptionTestCases() []testCase[updateDescriptionData] {
 	return []testCase[updateDescriptionData]{
 		{
 			Name: "Valid",
-			InputData: updateDescriptionData{newDescription: "Another description", task: NewTaskBuilder().task},
+			InputData: updateDescriptionData{newDescription: "Another description", task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Vaild: empty description",
-			InputData: updateDescriptionData{newDescription: "", task: NewTaskBuilder().task},
+			InputData: updateDescriptionData{newDescription: "", task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Invalid: in DONE status",
-			InputData: updateDescriptionData{newDescription: "Another description", task: NewTaskBuilder().Status(TaskStatusDone).task},
+			InputData: updateDescriptionData{newDescription: "Another description", task: NewTaskBuilder().Status(TaskStatusDone).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: in CANCELLED status",
-			InputData: updateDescriptionData{newDescription: "Another description", task: NewTaskBuilder().Status(TaskStatusCanceled).task},
+			InputData: updateDescriptionData{newDescription: "Another description", task: NewTaskBuilder().Status(TaskStatusCanceled).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: Overdue task",
-			InputData: updateDescriptionData{newDescription: "Another description", task: NewTaskBuilder().Deadline(time.Now().Add(-time.Hour)).task},
+			InputData: updateDescriptionData{newDescription: "Another description", task: NewTaskBuilder().Deadline(time.Now().Add(-time.Hour)).Task},
 			WantErr: ErrCannotEditTask,
 		},
 	}
@@ -270,37 +270,37 @@ func GetUpdateDeadlineTestCases() []testCase[updateDeadlineData] {
 	return []testCase[updateDeadlineData]{
 		{
 			Name: "Valid: increase",
-			InputData: updateDeadlineData{newDeadline: now.Add(2*time.Hour), task: NewTaskBuilder().task},
+			InputData: updateDeadlineData{newDeadline: now.Add(2*time.Hour), task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Vaild: decrease",
-			InputData: updateDeadlineData{newDeadline: now.Add(30*time.Minute), task: NewTaskBuilder().task},
+			InputData: updateDeadlineData{newDeadline: now.Add(30*time.Minute), task: NewTaskBuilder().Task},
 			WantErr: nil,
 		},
 		{
 			Name: "Invalid: in DONE status",
-			InputData: updateDeadlineData{newDeadline: now.Add(2*time.Hour), task: NewTaskBuilder().Status(TaskStatusDone).task},
+			InputData: updateDeadlineData{newDeadline: now.Add(2*time.Hour), task: NewTaskBuilder().Status(TaskStatusDone).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: in CANCELLED status",
-			InputData: updateDeadlineData{newDeadline: now.Add(2*time.Hour), task: NewTaskBuilder().Status(TaskStatusCanceled).task},
+			InputData: updateDeadlineData{newDeadline: now.Add(2*time.Hour), task: NewTaskBuilder().Status(TaskStatusCanceled).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: Overdue task",
-			InputData: updateDeadlineData{newDeadline: now.Add(2*time.Hour), task: NewTaskBuilder().Deadline(time.Now().Add(-time.Hour)).task},
+			InputData: updateDeadlineData{newDeadline: now.Add(2*time.Hour), task: NewTaskBuilder().Deadline(time.Now().Add(-time.Hour)).Task},
 			WantErr: ErrCannotEditTask,
 		},
 		{
 			Name: "Invalid: Deadline in past",
-			InputData: updateDeadlineData{newDeadline: now.Add(-2*time.Hour), task: NewTaskBuilder().task},
+			InputData: updateDeadlineData{newDeadline: now.Add(-2*time.Hour), task: NewTaskBuilder().Task},
 			WantErr: ErrOldDeadline,
 		},
 		{
 			Name: "Invalid: nil Deadline",
-			InputData: updateDeadlineData{newDeadline: time.Time{}, task: NewTaskBuilder().task},
+			InputData: updateDeadlineData{newDeadline: time.Time{}, task: NewTaskBuilder().Task},
 			WantErr: ErrEmptyDeadline,
 		},
 	}
@@ -310,12 +310,12 @@ func GetIsOverdueTestCases() []testCase[isOverdueData] {
 	return []testCase[isOverdueData]{
 		{
 			Name: "Not Overdue",
-			InputData: isOverdueData{task: NewTaskBuilder().task, expectedResponse: false },
+			InputData: isOverdueData{task: NewTaskBuilder().Task, expectedResponse: false },
 			WantErr: nil,
 		},
 		{
 			Name: "Overdue",
-			InputData: isOverdueData{task: NewTaskBuilder().Deadline(time.Now().Add(-2*time.Hour)).task, expectedResponse: true },
+			InputData: isOverdueData{task: NewTaskBuilder().Deadline(time.Now().Add(-2*time.Hour)).Task, expectedResponse: true },
 			WantErr: nil,
 		},
 	}
@@ -325,46 +325,46 @@ func GetIsActiveTestCases() []testCase[isActiveData] {
 	return []testCase[isActiveData]{
 		{
 			Name: "Active: TODO",
-			InputData: isActiveData{task: NewTaskBuilder().task, expectedResponse: true },
+			InputData: isActiveData{task: NewTaskBuilder().Task, expectedResponse: true },
 			WantErr: nil,
 		},
 		{
 			Name: "Active: INPROGRESS",
-			InputData: isActiveData{task: NewTaskBuilder().Status(TaskStatusInProgress).task, expectedResponse: true },
+			InputData: isActiveData{task: NewTaskBuilder().Status(TaskStatusInProgress).Task, expectedResponse: true },
 			WantErr: nil,
 		},
 		{
 			Name: "Not active: overdue TODO",
-			InputData: isActiveData{task: NewTaskBuilder().Deadline(time.Now().Add(-2*time.Hour)).task, expectedResponse: false },
+			InputData: isActiveData{task: NewTaskBuilder().Deadline(time.Now().Add(-2*time.Hour)).Task, expectedResponse: false },
 			WantErr: nil,
 		},
 		{
 			Name: "Not active: overdue INPROGRESS",
 			InputData: isActiveData{
-				task: NewTaskBuilder().Deadline(time.Now().Add(-2*time.Hour)).Status(TaskStatusInProgress).task,
+				task: NewTaskBuilder().Deadline(time.Now().Add(-2*time.Hour)).Status(TaskStatusInProgress).Task,
 				expectedResponse: false,
 			},
 			WantErr: nil,
 		},
 		{
 			Name: "Not active: DONE",
-			InputData: isActiveData{task: NewTaskBuilder().Status(TaskStatusDone).task, expectedResponse: false},
+			InputData: isActiveData{task: NewTaskBuilder().Status(TaskStatusDone).Task, expectedResponse: false},
 			WantErr: nil,
 		},
 		{
 			Name: "Not active: CANCELLED",
-			InputData: isActiveData{task: NewTaskBuilder().Status(TaskStatusCanceled).task, expectedResponse: false},
+			InputData: isActiveData{task: NewTaskBuilder().Status(TaskStatusCanceled).Task, expectedResponse: false},
 			WantErr: nil,
 		},
 		{
 			Name: "Not active: HOLD",
-			InputData: isActiveData{task: NewTaskBuilder().Status(TaskStatusHold).task, expectedResponse: false},
+			InputData: isActiveData{task: NewTaskBuilder().Status(TaskStatusHold).Task, expectedResponse: false},
 			WantErr: nil,
 		},
 		{
 			Name: "Not active: DONE and overdue",
 			InputData: isActiveData{
-				task: NewTaskBuilder().Status(TaskStatusDone).Deadline(time.Now().Add(-2*time.Hour)).task,
+				task: NewTaskBuilder().Status(TaskStatusDone).Deadline(time.Now().Add(-2*time.Hour)).Task,
 				expectedResponse: false,
 			},
 			WantErr: nil,
@@ -372,7 +372,7 @@ func GetIsActiveTestCases() []testCase[isActiveData] {
 		{
 			Name: "Not active: CANCELLED and overdue",
 			InputData: isActiveData{
-				task: NewTaskBuilder().Status(TaskStatusCanceled).Deadline(time.Now().Add(-2*time.Hour)).task,
+				task: NewTaskBuilder().Status(TaskStatusCanceled).Deadline(time.Now().Add(-2*time.Hour)).Task,
 				expectedResponse: false,
 			},
 			WantErr: nil,
@@ -380,7 +380,7 @@ func GetIsActiveTestCases() []testCase[isActiveData] {
 		{
 			Name: "Not active: HOLD and overdue",
 			InputData: isActiveData{
-				task: NewTaskBuilder().Status(TaskStatusHold).Deadline(time.Now().Add(-2*time.Hour)).task,
+				task: NewTaskBuilder().Status(TaskStatusHold).Deadline(time.Now().Add(-2*time.Hour)).Task,
 				expectedResponse: false,
 			},
 			WantErr: nil,
@@ -392,27 +392,27 @@ func GetIsFinishedTestCases() []testCase[isFinishedData] {
 	return []testCase[isFinishedData]{
 		{
 			Name: "Active: TODO",
-			InputData: isFinishedData{task: NewTaskBuilder().task, expectedResponse: false },
+			InputData: isFinishedData{task: NewTaskBuilder().Task, expectedResponse: false },
 			WantErr: nil,
 		},
 		{
 			Name: "Active: INPROGRESS",
-			InputData: isFinishedData{task: NewTaskBuilder().Status(TaskStatusInProgress).task, expectedResponse: false },
+			InputData: isFinishedData{task: NewTaskBuilder().Status(TaskStatusInProgress).Task, expectedResponse: false },
 			WantErr: nil,
 		},
 		{
 			Name: "Active: HOLD",
-			InputData: isFinishedData{task: NewTaskBuilder().Status(TaskStatusHold).task, expectedResponse: false },
+			InputData: isFinishedData{task: NewTaskBuilder().Status(TaskStatusHold).Task, expectedResponse: false },
 			WantErr: nil,
 		},
 		{
 			Name: "Finished: DONE",
-			InputData: isFinishedData{task: NewTaskBuilder().Status(TaskStatusDone).task, expectedResponse: true },
+			InputData: isFinishedData{task: NewTaskBuilder().Status(TaskStatusDone).Task, expectedResponse: true },
 			WantErr: nil,
 		},
 		{
 			Name: "Finished: CANCELLED",
-			InputData: isFinishedData{task: NewTaskBuilder().Status(TaskStatusCanceled).task, expectedResponse: true },
+			InputData: isFinishedData{task: NewTaskBuilder().Status(TaskStatusCanceled).Task, expectedResponse: true },
 			WantErr: nil,
 		},
 	}
@@ -422,23 +422,23 @@ func GetCanEditTestCases() []testCase[canEditData] {
 	return []testCase[canEditData]{
 		{
 			Name: "Can edit",
-			InputData: canEditData{task: NewTaskBuilder().task, expectedResponse: true },
+			InputData: canEditData{task: NewTaskBuilder().Task, expectedResponse: true },
 			WantErr: nil,
 		},
 		{
 			Name: "Cannot edit: overdue",
-			InputData: canEditData{task: NewTaskBuilder().Deadline(time.Now().Add(-2*time.Hour)).task, expectedResponse: false },
+			InputData: canEditData{task: NewTaskBuilder().Deadline(time.Now().Add(-2*time.Hour)).Task, expectedResponse: false },
 			WantErr: nil,
 		},
 		{
 			Name: "Cannot edit: finished",
-			InputData: canEditData{task: NewTaskBuilder().Status(TaskStatusDone).task, expectedResponse: false },
+			InputData: canEditData{task: NewTaskBuilder().Status(TaskStatusDone).Task, expectedResponse: false },
 			WantErr: nil,
 		},
 		{
 			Name: "Cannot edit: overdue and finished",
 			InputData: canEditData{
-				task: NewTaskBuilder().Status(TaskStatusDone).Deadline(time.Now().Add(-2*time.Hour)).task,
+				task: NewTaskBuilder().Status(TaskStatusDone).Deadline(time.Now().Add(-2*time.Hour)).Task,
 				expectedResponse: false,
 			},
 			WantErr: nil,
