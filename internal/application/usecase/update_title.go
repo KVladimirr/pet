@@ -21,6 +21,10 @@ type UpdateTaskTitleDTO struct {
 }
 
 func (u *UpdateTaskTitleUsecase) Execute(ctx context.Context, cmd *UpdateTaskTitleDTO) error {
+	if cmd == nil {
+		return NilDTOError
+	}
+	
 	task, err := u.repo.GetByID(ctx, cmd.TaskID)
 	if err != nil {
 		return err

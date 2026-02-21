@@ -12,7 +12,8 @@ import (
 
 type inputData interface {
 	testifyCreateTaskData | testifyDeleteTaskData | testifyGetAllTasksData | testifyGetTaskData |
-	testifyUpdateDeadlineTaskData | testifyUpdateDescriptionTaskData
+	testifyUpdateDeadlineTaskData | testifyUpdateDescriptionTaskData | testifyUpdateStatusTaskData |
+	testifyUpdateTitleTaskData
 }
 
 type testifyTestCase[T inputData] struct{
@@ -50,6 +51,18 @@ type testifyUpdateDeadlineTaskData struct{
 
 type testifyUpdateDescriptionTaskData struct{
 	Dto		*UpdateTaskDescriptionDTO
+	Task	*domain.Task
+	RepoErr	error
+}
+
+type testifyUpdateStatusTaskData struct{
+	Dto		*UpdateTaskStatusDTO
+	Task	*domain.Task
+	RepoErr	error
+}
+
+type testifyUpdateTitleTaskData struct{
+	Dto		*UpdateTaskTitleDTO
 	Task	*domain.Task
 	RepoErr	error
 }
@@ -437,6 +450,174 @@ func GetUpdateDescriptionTestifyData() []testifyTestCase[testifyUpdateDescriptio
 				Dto: &UpdateTaskDescriptionDTO{
 					TaskID: taskForSaveErrorCase.ID,
 					NewDescription: "Updated", 
+				},
+				Task: taskForSaveErrorCase,
+				RepoErr: repoError,
+			},
+			WantErr: repoError,
+			SetupMock: func(m *mocks.MockTestifyRepo) {
+				m.On("GetByID", mock.Anything, taskForSaveErrorCase.ID).Return(taskForSaveErrorCase, nil).Once()
+				m.On("Save", mock.Anything, taskForSaveErrorCase).Return(repoError).Once()
+			},
+		},
+	}
+}
+
+func GetUpdateStatusTestifyData() []testifyTestCase[testifyUpdateStatusTaskData] {
+	repoError := errors.New("Repo error")
+	taskForValidCase := domain.NewTaskBuilder().Task
+	taskForNilDTOErrorCase := domain.NewTaskBuilder().Task
+	taskForGetTaskErrorCase := domain.NewTaskBuilder().Task
+	taskForDomainErrorCase := domain.NewTaskBuilder().Status(domain.TaskStatusCanceled).Task
+	taskForSaveErrorCase := domain.NewTaskBuilder().Task
+	
+	return []testifyTestCase[testifyUpdateStatusTaskData]{
+		{
+			Name: "Valid",
+			InputData: testifyUpdateStatusTaskData{
+				Dto: &UpdateTaskStatusDTO{
+					TaskID: taskForValidCase.ID,
+					NewStatus: domain.TaskStatusDone,
+				},
+				Task: taskForValidCase,
+				RepoErr: nil,
+			},
+			WantErr: nil,
+			SetupMock: func(m *mocks.MockTestifyRepo) {
+				m.On("GetByID", mock.Anything, taskForValidCase.ID).Return(taskForValidCase, nil).Once()
+				m.On("Save", mock.Anything, taskForValidCase).Return(nil).Once()
+			},
+		},
+		{
+			Name: "Invalid: nil DTO",
+			InputData: testifyUpdateStatusTaskData{
+				Dto: nil,
+				Task: taskForNilDTOErrorCase,
+				RepoErr: nil,
+			},
+			WantErr: NilDTOError,
+			SetupMock: func(m *mocks.MockTestifyRepo) {},
+		},
+		{
+			Name: "Invalid: GetByID error",
+			InputData: testifyUpdateStatusTaskData{
+				Dto: &UpdateTaskStatusDTO{
+					TaskID: taskForGetTaskErrorCase.ID,
+					NewStatus: domain.TaskStatusDone,
+				},
+				Task: taskForGetTaskErrorCase,
+				RepoErr: repoError,
+			},
+			WantErr: repoError,
+			SetupMock: func(m *mocks.MockTestifyRepo) {
+				m.On("GetByID", mock.Anything, taskForGetTaskErrorCase.ID).Return(nil, repoError).Once()
+			},
+		},
+		{
+			Name: "Invalid: domain error",
+			InputData: testifyUpdateStatusTaskData{
+				Dto: &UpdateTaskStatusDTO{
+					TaskID: taskForDomainErrorCase.ID,
+					NewStatus: domain.TaskStatusDone,
+				},
+				Task: taskForDomainErrorCase,
+				RepoErr: domain.ErrCannotEditTask,
+			},
+			WantErr: domain.ErrCannotEditTask,
+			SetupMock: func(m *mocks.MockTestifyRepo) {
+				m.On("GetByID", mock.Anything, taskForDomainErrorCase.ID).Return(taskForDomainErrorCase, nil).Once()
+			},
+		},
+		{
+			Name: "Invalid: Save error",
+			InputData: testifyUpdateStatusTaskData{
+				Dto: &UpdateTaskStatusDTO{
+					TaskID: taskForSaveErrorCase.ID,
+					NewStatus: domain.TaskStatusDone, 
+				},
+				Task: taskForSaveErrorCase,
+				RepoErr: repoError,
+			},
+			WantErr: repoError,
+			SetupMock: func(m *mocks.MockTestifyRepo) {
+				m.On("GetByID", mock.Anything, taskForSaveErrorCase.ID).Return(taskForSaveErrorCase, nil).Once()
+				m.On("Save", mock.Anything, taskForSaveErrorCase).Return(repoError).Once()
+			},
+		},
+	}
+}
+
+func GetUpdateTitleTestifyData() []testifyTestCase[testifyUpdateTitleTaskData] {
+	repoError := errors.New("Repo error")
+	taskForValidCase := domain.NewTaskBuilder().Task
+	taskForNilDTOErrorCase := domain.NewTaskBuilder().Task
+	taskForGetTaskErrorCase := domain.NewTaskBuilder().Task
+	taskForDomainErrorCase := domain.NewTaskBuilder().Status(domain.TaskStatusCanceled).Task
+	taskForSaveErrorCase := domain.NewTaskBuilder().Task
+	
+	return []testifyTestCase[testifyUpdateTitleTaskData]{
+		{
+			Name: "Valid",
+			InputData: testifyUpdateTitleTaskData{
+				Dto: &UpdateTaskTitleDTO{
+					TaskID: taskForValidCase.ID,
+					NewTitle: "Updated title",
+				},
+				Task: taskForValidCase,
+				RepoErr: nil,
+			},
+			WantErr: nil,
+			SetupMock: func(m *mocks.MockTestifyRepo) {
+				m.On("GetByID", mock.Anything, taskForValidCase.ID).Return(taskForValidCase, nil).Once()
+				m.On("Save", mock.Anything, taskForValidCase).Return(nil).Once()
+			},
+		},
+		{
+			Name: "Invalid: nil DTO",
+			InputData: testifyUpdateTitleTaskData{
+				Dto: nil,
+				Task: taskForNilDTOErrorCase,
+				RepoErr: nil,
+			},
+			WantErr: NilDTOError,
+			SetupMock: func(m *mocks.MockTestifyRepo) {},
+		},
+		{
+			Name: "Invalid: GetByID error",
+			InputData: testifyUpdateTitleTaskData{
+				Dto: &UpdateTaskTitleDTO{
+					TaskID: taskForGetTaskErrorCase.ID,
+					NewTitle: "Updated title",
+				},
+				Task: taskForGetTaskErrorCase,
+				RepoErr: repoError,
+			},
+			WantErr: repoError,
+			SetupMock: func(m *mocks.MockTestifyRepo) {
+				m.On("GetByID", mock.Anything, taskForGetTaskErrorCase.ID).Return(nil, repoError).Once()
+			},
+		},
+		{
+			Name: "Invalid: domain error",
+			InputData: testifyUpdateTitleTaskData{
+				Dto: &UpdateTaskTitleDTO{
+					TaskID: taskForDomainErrorCase.ID,
+					NewTitle: "Updated title",
+				},
+				Task: taskForDomainErrorCase,
+				RepoErr: domain.ErrCannotEditTask,
+			},
+			WantErr: domain.ErrCannotEditTask,
+			SetupMock: func(m *mocks.MockTestifyRepo) {
+				m.On("GetByID", mock.Anything, taskForDomainErrorCase.ID).Return(taskForDomainErrorCase, nil).Once()
+			},
+		},
+		{
+			Name: "Invalid: Save error",
+			InputData: testifyUpdateTitleTaskData{
+				Dto: &UpdateTaskTitleDTO{
+					TaskID: taskForSaveErrorCase.ID,
+					NewTitle: "Updated title", 
 				},
 				Task: taskForSaveErrorCase,
 				RepoErr: repoError,
